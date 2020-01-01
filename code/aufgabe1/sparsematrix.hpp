@@ -13,22 +13,23 @@ namespace linag {
         int length;
         T *data;
     };
-
-    double **generateLSData(int);
-
-    vector<double> conjugateGradientSolver(double ** A, int n, double * b, double * x, double tau);
-
+    template<typename T>
+    struct matrix {
+        int rows,cols;
+        T **data;
+    };
 
     class SparseMatrix {
     private:
         linag::vector<double> v;
         linag::vector<int> J;
         linag::vector<int> I;
+        int rows,cols;
 
-        int sum(int *, int);
+        int sum(linag::vector<int>);
 
     public:
-        SparseMatrix(int, int *, int);
+        SparseMatrix(int,linag::vector<int>);
 
         ~SparseMatrix();
 
@@ -36,7 +37,9 @@ namespace linag {
 
         SparseMatrix(const SparseMatrix &);
 
-        SparseMatrix(const double **, int, int);
+        SparseMatrix(const matrix<double>&);
+
+        SparseMatrix &operator=(const matrix<double> &);
 
 
         const linag::vector<double> &getv() const { return v; }
@@ -53,9 +56,18 @@ namespace linag {
 
         SparseMatrix* transpose();
 
+        linag::matrix<double> todense();
+
         int size() const;
 
     };
 
+
+
+    double **generateLSData(int,linag::vector<int>);
+
+    vector<double> conjugateGradientSolver(double ** A, int n, double * b, double * x, double tau);
+
+    void freeMatrix(matrix<double> &);
 }
 #endif //AUFGABE1_SPARSEMATRIX_HPP

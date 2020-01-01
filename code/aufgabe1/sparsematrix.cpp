@@ -8,13 +8,21 @@
 #include <stdlib.h>
 
 
-linag::SparseMatrix::SparseMatrix(int n,int* ungleichNull, int ungleichNullc){
-    v.length = n * sum(ungleichNull,ungleichNullc);
+linag::SparseMatrix::SparseMatrix(int n,linag::vector<int> notzero){
+    //generate
+    //rows/cols
+    rows=n;
+    cols=n;
+    v.length = n * sum(notzero);
     v.data = (double*)malloc(v.length * sizeof(double));
     I.length = n+1;
     I.data = (int*)malloc(I.length * sizeof(int));
     J.length = v.length;
     J.data = (int*)malloc(J.length * sizeof(int));
+    //generate data
+
+
+
 }
 linag::SparseMatrix::~SparseMatrix() {
     free(v.data);
@@ -27,6 +35,8 @@ linag::SparseMatrix::SparseMatrix(const SparseMatrix &other) {
         v.length = other.getv().length;
         I.length = other.getI().length;
         J.length = other.getJ().length;
+        rows=other.rows;
+        cols=other.cols;
         //deep copy
         memcpy(v.data,other.getv().data,v.length * sizeof(double));
         memcpy(I.data,other.getI().data,I.length * sizeof(int));
@@ -39,6 +49,8 @@ linag::SparseMatrix& linag::SparseMatrix::operator=(const SparseMatrix &other) {
         v.length = other.getv().length;
         I.length = other.getI().length;
         J.length = other.getJ().length;
+        rows=other.rows;
+        cols=other.cols;
         //deep copy
         memcpy(v.data,other.getv().data,v.length * sizeof(double));
         memcpy(I.data,other.getI().data,I.length * sizeof(int));
@@ -47,53 +59,54 @@ linag::SparseMatrix& linag::SparseMatrix::operator=(const SparseMatrix &other) {
     return *this;
 }
 //copy matrix
-linag::SparseMatrix::SparseMatrix(const double** other,int n,int m) {
-    if(other) {//check if other is nullptr
+linag::SparseMatrix::SparseMatrix(const matrix<double> &other ) {
         //calculate array size
         v.length=0;
-        I.length=n+1;
-        for (int i = 0; i < n; ++i) {//rows
-            for (int j = 0; j < m; ++j) {//cols
-                if(other[n][m] > 10e-10 || other[n][m] < -10e-10){
+        I.length=other.rows+1;
+        for (int i = 0; i < other.rows; ++i) {//rows
+            for (int j = 0; j < other.cols; ++j) {//cols
+                if(other.data[i][j] > 10e-10 || other.data[i][j] < -10e-10){
                     ++v.length;
                 }
             }
         }
+        //rows/cols
+        rows=other.rows;
+        cols=other.cols;
         //set array size
         J.length=v.length;
         v.data = (double*)malloc(v.length * sizeof(double));
         I.data = (int*)malloc(I.length * sizeof(int));
         J.data = (int*)malloc(J.length * sizeof(int));
 
-        //convert matrix to sparse matrix
+        //convert dense matrix to sparse matrix
         int vc=0;
         int Ic=0;
         int Jc=0;
-        for (int i = 0; i < n; ++i) {//rows
-            for (int j = 0; j < m; ++j) {//cols
-                if(other[n][m] > 10e-10 || other[n][m] < -10e-10){
+        for (int i = 0; i < other.rows; ++i) {//rows
+            for (int j = 0; j < other.cols; ++j) {//cols
+                if(other.data[i][j] > 10e-10 || other.data[i][j] < -10e-10){
                     if(!Ic || Ic != i){
                         I.data[Ic++] = vc;
                     }
-                    v.data[vc++] = other[n][m];
+                    v.data[vc++] = other.data[i][j];
                     J.data[Jc++] = j;
                 }
             }
         }
-    }
 }
 
-int linag::SparseMatrix::sum(int* a,int ac){
-    if(!a)
+int linag::SparseMatrix::sum(linag::vector<int> a){
+    if(!a.data)
         return 0;
-    int sum = a[0];
-    for(int i =1;i<ac;++i) {
-        sum += a[i];
+    int sum = a.data[0];
+    for(int i =1;i<a.length;++i) {
+        sum += a.data[i];
     }
     return sum;
 }
 
-double** linag::generateLSData(int n) {
+double** linag::generateLSData(int n,linag::vector<int> notzero) {
     double** A = (double**)malloc(n* sizeof(double*));
     for(int i=0;i<n;++i){
         A[i] = (double*)malloc(n* sizeof(double));
@@ -118,12 +131,19 @@ linag::SparseMatrix* linag::SparseMatrix::transpose() {
     int vc = 0;
     int Ic = 0;
     int Jc=0;
+    for (int i = 0; i < trans->getI().length; ++i) {
+        trans->setI().data[i] = 0;
+    }
     for (int i = 0; i < trans->size()[0]; ++i) {    //cols
         for (int j = 0; j < trans->getv().length; ++j) {
               if(v.data[j] == i){
-                  if(!Ic || Ic != i){
-                      trans->setI().data[Ic++] = vc;
-                  }
+                  //increment number of elements in this col (=rowptr after trans)
+                  ++trans->setI().data[i];
+                  //calculate new col index
+
+
+
+                  //change order of elements in v
                   trans->setv().data[vc++] = v.data[j];
               }
         }
@@ -133,3 +153,25 @@ linag::SparseMatrix* linag::SparseMatrix::transpose() {
     return trans;//trans is  pointer. use delete();
 }
 
+linag::matrix<double> linag::SparseMatrix::todense() {
+    linag::matrix<double> M={};
+    M.rows = rows;
+    M.cols = cols;
+    M.data = (double**)malloc(rows* sizeof(double*));
+    for (int i = 0; i < rows; ++i) {
+        //calloc allocates the memory and sets all values to 0
+        M.data[i] = (double*)calloc(cols, sizeof(double));
+        for (int j = J.data[i]; j < J.data[i+1]-J.data[i]; ++j) {
+            M.data[i][I.data[j]]=v.data[j];
+        }
+    }
+    return M;//use freeMatrix to free M.data
+}
+
+
+void linag::freeMatrix(matrix<double> &M){
+    for (int i = 0; i < M.rows; ++i) {
+        free(M.data[i]);
+    }
+    free(M.data);
+}
