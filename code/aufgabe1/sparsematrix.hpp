@@ -7,35 +7,55 @@
 
 #include <stdlib.h>
 
-template <typename T>
-struct array {
-    int length;
-    T* data;
-};
+namespace linag {
+    template<typename T>
+    struct vector {
+        int length;
+        T *data;
+    };
 
-class SparseMatrix {
-private:
-    array<double> v;
-    array<int> J;
-    array<int> I;
+    double **generateLSData(int);
 
-    int sum(int*,int);
-
-public:
-    SparseMatrix(int,int*,int);
-    ~SparseMatrix();
-
-    SparseMatrix& operator=(const SparseMatrix&);
-    SparseMatrix(const SparseMatrix&);
-    SparseMatrix(const double**,int,int);
+    vector<double> conjugateGradientSolver(double ** A, int n, double * b, double * x, double tau);
 
 
-    const array<double>& getv() const { return v;}
-    const array<int>& getI() const { return I;}
-    const array<int>& getJ() const { return J;};
-    int size() const;
+    class SparseMatrix {
+    private:
+        linag::vector<double> v;
+        linag::vector<int> J;
+        linag::vector<int> I;
 
-};
+        int sum(int *, int);
+
+    public:
+        SparseMatrix(int, int *, int);
+
+        ~SparseMatrix();
+
+        SparseMatrix &operator=(const SparseMatrix &);
+
+        SparseMatrix(const SparseMatrix &);
+
+        SparseMatrix(const double **, int, int);
 
 
+        const linag::vector<double> &getv() const { return v; }
+
+        const linag::vector<int> &getI() const { return I; }
+
+        const linag::vector<int> &getJ() const { return J; };
+
+        linag::vector<double> &setv() { return v; }
+
+        linag::vector<int> &setI() { return I; }
+
+        linag::vector<int> &setJ() { return J; };
+
+        SparseMatrix* transpose();
+
+        int size() const;
+
+    };
+
+}
 #endif //AUFGABE1_SPARSEMATRIX_HPP
