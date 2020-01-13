@@ -3,6 +3,8 @@
 #include<stdlib.h>
 #include<time.h>
 //#include <sparsematrix.cpp>
+#include <eigen-3.3.7/Eigen/Dense>
+
 
 int main() {
 
