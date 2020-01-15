@@ -47,6 +47,15 @@ date=short                % Datumsformat
 \usepackage{caption}
 \usepackage{subcaption}
 
+%\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{algorithmicx}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
 \usepackage[table,xcdraw,dvipsnames]{xcolor}
 
 \usepackage{fancyvrb}
@@ -319,10 +328,64 @@ date=short                % Datumsformat
 	\newpage
 
 	\section{Einleitung}
-
+	\newpage
+	
+	\section{cg}
+	
+	\begin{algorithm}[H]
+		\textbf{Input:} Sei A$\in$ $\mathbb{R}^{n\times n}, b, x_0 \in \mathbb{R}^{n}$ und eine Toleranz $\tau > 0$
+		\begin{algorithmic}[1]
+			\State $r_0 = b - Ax_0$
+			\State $d_0 = r_0$
+			\State $t = 0$
+			\While{$ \norm{r_t} > \tau $}
+			\State $\alpha_t = \frac{r_t^{T}r_t}{d_t^{T}Ad_t}$
+			\State $x_{t+1} = x_{t+1} + \alpha_t d_t$
+			\State $r_{t+1} = r_t - \alpha_t Ad_t$
+			\State $\beta_k = \frac{r_{t+1}^{T}r_{t+1}}{r_t^{T}r_t}$
+			\State $d_{t+1} = r_{t+1} + \beta_td_t$
+			\State $t = t + 1$
+			\EndWhile
+		\end{algorithmic}
+		\textbf{Output:} Näherung $x_t$ an $x = A^{-1}b$ mit $\norm{Ax_t-b} < \tau$
+		
+		\caption{CG-Verfahren} \label{alg:cg}
+	\end{algorithm}
+	
+	Nun stellt sich die Frage, ob \cref{alg:cg} äquivalent zum Algorithmus \autocite[vgl.][101]{skript} und welches bevorzugt wird.
 	
 	\newpage
-
+	Die spektrale Konditionszahl $cond(A) = definition$ definiert die Konvergenzgeschwindigkeit des CG-Verfahrens. Durch lösen des vorkonditionierten Systems
+	\begin{align*}
+		D^{-1}AD^{-T}y = D^{-1}b
+	\end{align*}
+	kann die Konvergenz beschleunigt werden und man bekommt eine Lösung x der Form 
+	\begin{align*}
+		x = D^{-T}y
+	\end{align*}
+	Man wählt die Matrix D so, dass für beliebige $z \in \mathbb{R}^{n}$ der Vektor $D^{-T}D^{-1}z$ einfach zu berechnen ist und zugleich, dass $cond(D^{-1}AD^{-T}) < cond(A)$ gilt.
+	\begin{algorithm}[H]
+		\textbf{Input:} Sei A$\in$ $\mathbb{R}^{n\times n}, x_0 \in \mathbb{R}^{n}, P:=DD^{T}$ und eine Toleranz $\tau > 0$
+		\begin{algorithmic}[1]
+			\State $r_0 = b - Ax_0$
+			\State $z_0 = P^{-1}r_0$
+			\State $d_0 = r_0$
+			\State $t = 0$
+			\While{$ \norm{r_t} > \tau $}
+			\State $\alpha_t = \frac{r_t^{T}z_t}{d_t^{T}Ad_t}$
+			\State $x_{t+1} = x_{t+1} + \alpha_t d_t$
+			\State $r_{t+1} = r_t - \alpha_t Ad_t$
+			\State $z_{t+1} = P^{-1}r_{t+1}$
+			\State $\beta_k = \frac{z_{t+1}^{T}r_{t+1}}{z_tr_t}$
+			\State $d_{t+1} = r_{t+1} + \beta_td_t$
+			\State $t = t + 1$
+			\EndWhile
+		\end{algorithmic}
+		\textbf{Output:} Näherung $x_t$ an $x = A^{-1}b$ mit $\norm{Ax_t-b} < \tau$
+		
+		\caption{Vorkonditionierte CG-Verfahren} \label{alg:vcg}
+	\end{algorithm}
+	
 	\newpage
 	\printbibliography
 	\listoffigures
