@@ -12,6 +12,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0b620dd8-7fb2-434f-8219-f511de172755" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sparsematrix.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/sparsematrix.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sparsematrix.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/sparsematrix.hpp" afterDir="false" />
     </list>
@@ -58,8 +60,10 @@
     <session id="1277694767">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+          <entry key="project.closed" value="1" />
           <entry key="project.open.time.1" value="1" />
-          <entry key="project.opened" value="1" />
+          <entry key="project.open.time.4" value="1" />
+          <entry key="project.opened" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -74,13 +78,13 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cpp" value="1351" />
-          <entry key="hpp" value="453" />
+          <entry key="cpp" value="3020" />
+          <entry key="hpp" value="1218" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="ObjectiveC" value="1804" />
+          <entry key="ObjectiveC" value="4238" />
         </counts>
       </usages-collector>
     </session>
@@ -94,29 +98,56 @@
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/sparsematrix.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="513">
-              <caret line="167" column="30" selection-start-line="167" selection-start-column="30" selection-end-line="167" selection-end-column="30" />
-              <folding>
-                <element signature="e#55#82#0" expanded="true" />
-              </folding>
+            <state>
+              <caret column="19" lean-forward="true" selection-start-column="19" selection-end-column="19" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sparsematrix.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="133">
+              <caret line="7" column="19" lean-forward="true" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
+              <folding>
+                <element signature="e#134#146#0" expanded="true" />
+                <element signature="e#545#557#0" expanded="true" />
+                <element signature="e#662#674#0" expanded="true" />
+                <element signature="e#1236#1248#0" expanded="true" />
+                <element signature="e#1826#1838#0" expanded="true" />
+                <element signature="e#3079#3091#0" expanded="true" />
+                <element signature="e#3302#3314#0" expanded="true" />
+                <element signature="e#3373#3385#0" expanded="true" />
+                <element signature="e#5103#5115#0" expanded="true" />
+                <element signature="e#4003#4015#0" expanded="true" />
+                <element signature="e#4690#4702#0" expanded="true" />
+                <element signature="e#5692#5704#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sparsematrix.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="61">
-              <caret line="24" column="20" selection-start-line="24" selection-start-column="20" selection-end-line="24" selection-end-column="20" />
+            <state relative-caret-position="171">
+              <caret line="9" column="47" lean-forward="true" selection-start-line="9" selection-start-column="47" selection-end-line="9" selection-end-column="47" />
               <folding>
-                <element signature="e#154#166#0" expanded="true" />
-                <element signature="e#264#276#0" expanded="true" />
+                <element signature="e#175#187#0" expanded="true" />
+                <element signature="e#494#506#0" expanded="true" />
+                <element signature="e#496#508#0" expanded="true" />
+                <element signature="e#363#375#0" expanded="true" />
+                <element signature="e#481#493#0" expanded="true" />
+                <element signature="e#1945#1957#0" expanded="true" />
+                <element signature="e#2011#2023#0" expanded="true" />
+                <element signature="e#2060#2072#0" expanded="true" />
+                <element signature="e#2257#2269#0" expanded="true" />
+                <element signature="e#2702#2714#0" expanded="true" />
+                <element signature="e#2702#2714#0" expanded="true" />
+                <element signature="e#2883#2895#0" expanded="true" />
+                <element signature="e#2936#2948#0" expanded="true" />
+                <element signature="e#2192#2204#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -132,6 +163,7 @@
       <list>
         <option value="$PROJECT_DIR$/matrix.hpp" />
         <option value="$PROJECT_DIR$/matrix.cpp" />
+        <option value="$PROJECT_DIR$/main.cpp" />
         <option value="$PROJECT_DIR$/sparsematrix.hpp" />
         <option value="$PROJECT_DIR$/sparsematrix.cpp" />
       </list>
@@ -215,18 +247,19 @@
       <option name="presentableId" value="Default" />
       <updated>1577722506778</updated>
       <workItem from="1577722508114" duration="7582000" />
-      <workItem from="1577828888062" duration="9658000" />
+      <workItem from="1577828888062" duration="10031000" />
+      <workItem from="1579097183261" duration="12403000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="17240000" />
+    <option name="totallyTimeSpent" value="30016000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24320458" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24678111" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -259,25 +292,52 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sparsematrix.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="61">
-          <caret line="24" column="20" selection-start-line="24" selection-start-column="20" selection-end-line="24" selection-end-column="20" />
-          <folding>
-            <element signature="e#154#166#0" expanded="true" />
-            <element signature="e#264#276#0" expanded="true" />
-          </folding>
+        <state>
+          <caret column="19" lean-forward="true" selection-start-column="19" selection-end-column="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sparsematrix.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="513">
-          <caret line="167" column="30" selection-start-line="167" selection-start-column="30" selection-end-line="167" selection-end-column="30" />
+        <state relative-caret-position="133">
+          <caret line="7" column="19" lean-forward="true" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
           <folding>
-            <element signature="e#55#82#0" expanded="true" />
+            <element signature="e#134#146#0" expanded="true" />
+            <element signature="e#545#557#0" expanded="true" />
+            <element signature="e#662#674#0" expanded="true" />
+            <element signature="e#1236#1248#0" expanded="true" />
+            <element signature="e#1826#1838#0" expanded="true" />
+            <element signature="e#3079#3091#0" expanded="true" />
+            <element signature="e#3302#3314#0" expanded="true" />
+            <element signature="e#3373#3385#0" expanded="true" />
+            <element signature="e#5103#5115#0" expanded="true" />
+            <element signature="e#4003#4015#0" expanded="true" />
+            <element signature="e#4690#4702#0" expanded="true" />
+            <element signature="e#5692#5704#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sparsematrix.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="9" column="47" lean-forward="true" selection-start-line="9" selection-start-column="47" selection-end-line="9" selection-end-column="47" />
+          <folding>
+            <element signature="e#175#187#0" expanded="true" />
+            <element signature="e#494#506#0" expanded="true" />
+            <element signature="e#496#508#0" expanded="true" />
+            <element signature="e#363#375#0" expanded="true" />
+            <element signature="e#481#493#0" expanded="true" />
+            <element signature="e#1945#1957#0" expanded="true" />
+            <element signature="e#2011#2023#0" expanded="true" />
+            <element signature="e#2060#2072#0" expanded="true" />
+            <element signature="e#2257#2269#0" expanded="true" />
+            <element signature="e#2702#2714#0" expanded="true" />
+            <element signature="e#2702#2714#0" expanded="true" />
+            <element signature="e#2883#2895#0" expanded="true" />
+            <element signature="e#2936#2948#0" expanded="true" />
+            <element signature="e#2192#2204#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -6,6 +6,11 @@
 #define AUFGABE1_SPARSEMATRIX_HPP
 
 #include <stdlib.h>
+//eigen lib
+#include </usr/local/include/eigen3/Eigen/Dense>
+#include </usr/local/include/eigen3/Eigen/Eigenvalues>
+
+
 
 namespace linag {
     template<typename T>
@@ -19,9 +24,52 @@ namespace linag {
         T **data;
     };
 
+    struct size {
+        int rows,cols;
+    };
+
+
+    template <typename T>
+    class Vector{
+    private:
+        int l;
+        T* data;
+    public:
+        int length(){return l;};
+        T& at(int,int);
+        const T& at(int,int) const;
+
+        double norm();
+    };
+
+    template<typename T>
+    class DenseMatrix{
+    private:
+        int rows,cols;
+        T** data;
+    public:
+        DenseMatrix(int,int);
+        ~DenseMatrix();
+
+        DenseMatrix(const DenseMatrix<T> &);
+        DenseMatrix &operator=(const DenseMatrix<T> &);
+        DenseMatrix(const matrix<T>&);
+        DenseMatrix &operator=(const matrix<T> &);
+
+        Eigen::Matrix<T,Eigen::Dynamic,Eigen::Dynamic> toEigenMatrix();
+
+        T& at(int,int);
+        const T& at(int,int) const;
+        linag::Vector<T> colToVector(int col);
+        linag::Vector<T> rowToVector(int col);
+        linag::size dim();
+    };
+
+
+    template<typename T>
     class SparseMatrix {
     private:
-        linag::vector<double> v;
+        linag::vector<T> v;
         linag::vector<int> J;
         linag::vector<int> I;
         int rows,cols;
@@ -37,37 +85,51 @@ namespace linag {
 
         SparseMatrix(const SparseMatrix &);
 
-        SparseMatrix(const matrix<double>&);
+        SparseMatrix(const matrix<T>&);
 
-        SparseMatrix &operator=(const matrix<double> &);
+        SparseMatrix &operator=(const matrix<T> &);
 
-
-        const linag::vector<double> &getv() const { return v; }
+        const linag::vector<T> &getv() const { return v; }
 
         const linag::vector<int> &getI() const { return I; }
 
         const linag::vector<int> &getJ() const { return J; };
 
-        linag::vector<double> &setv() { return v; }
+        linag::vector<T> &setv() { return v; }
 
         linag::vector<int> &setI() { return I; }
 
         linag::vector<int> &setJ() { return J; };
 
-        SparseMatrix* transpose();
+        linag::matrix<T> todense();
 
-        linag::matrix<double> todense();
+        T& at(int,int);
 
         int size() const;
 
     };
 
 
+    template <typename T>
+    linag::DenseMatrix<T> genRandomMatrix(int,int);
 
-    double **generateLSData(int,linag::vector<int>);
+    template <typename T>
+    Vector<T> conjugateGradientSolver(linag::DenseMatrix<T> A,linag::Vector<T> b,linag::Vector<T> x,double tau);
+    template <typename T>
+    linag::DenseMatrix<T> prod(linag::DenseMatrix<T>,linag::DenseMatrix<T>);
+    template <typename T>
+    linag::Vector<T> prod(linag::DenseMatrix<T>,linag::Vector<T>);
+    template <typename T>
+    linag::Vector<T> prod(linag::Vector<T>,linag::DenseMatrix<T>);
+    template <typename T>
+    T prod(linag::Vector<T>,linag::Vector<T>);
+    template <typename T>
+    T prod(T,linag::Vector<T>);
+    template <typename T>
+    T prod(T,linag::DenseMatrix<T>);
 
-    vector<double> conjugateGradientSolver(double ** A, int n, double * b, double * x, double tau);
+    template <typename T>
+    linag::DenseMatrix<T> trans(linag::DenseMatrix<T>);
 
-    void freeMatrix(matrix<double> &);
 }
 #endif //AUFGABE1_SPARSEMATRIX_HPP

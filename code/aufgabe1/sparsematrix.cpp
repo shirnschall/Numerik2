@@ -6,9 +6,10 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>       /* time */
 
-
-linag::SparseMatrix::SparseMatrix(int n,linag::vector<int> notzero){
+template <typename T>
+linag::SparseMatrix<T>::SparseMatrix(int n,linag::vector<int> notzero){
     //generate
     //rows/cols
     rows=n;
@@ -24,13 +25,15 @@ linag::SparseMatrix::SparseMatrix(int n,linag::vector<int> notzero){
 
 
 }
-linag::SparseMatrix::~SparseMatrix() {
+template <typename T>
+linag::SparseMatrix<T>::~SparseMatrix() {
     free(v.data);
     free(I.data);
     free(J.data);
 }
 //copy sparsematrix
-linag::SparseMatrix::SparseMatrix(const SparseMatrix &other) {
+template <typename T>
+linag::SparseMatrix<T>::SparseMatrix(const SparseMatrix &other) {
     if(this!=&other) { //reference cannot be null
         v.length = other.getv().length;
         I.length = other.getI().length;
@@ -44,7 +47,8 @@ linag::SparseMatrix::SparseMatrix(const SparseMatrix &other) {
     }
 }
 //= sparsematrix
-linag::SparseMatrix& linag::SparseMatrix::operator=(const SparseMatrix &other) {
+template <typename T>
+linag::SparseMatrix<T>& linag::SparseMatrix<T>::operator=(const SparseMatrix<T> &other) {
     if(this!=&other) { //reference cannot be null
         v.length = other.getv().length;
         I.length = other.getI().length;
@@ -59,7 +63,8 @@ linag::SparseMatrix& linag::SparseMatrix::operator=(const SparseMatrix &other) {
     return *this;
 }
 //copy matrix
-linag::SparseMatrix::SparseMatrix(const matrix<double> &other ) {
+template <typename T>
+linag::SparseMatrix<T>::SparseMatrix(const matrix<T> &other ) {
         //calculate array size
         v.length=0;
         I.length=other.rows+1;
@@ -96,7 +101,8 @@ linag::SparseMatrix::SparseMatrix(const matrix<double> &other ) {
         }
 }
 
-int linag::SparseMatrix::sum(linag::vector<int> a){
+template <typename T>
+int linag::SparseMatrix<T>::sum(linag::vector<int> a){
     if(!a.data)
         return 0;
     int sum = a.data[0];
@@ -106,58 +112,39 @@ int linag::SparseMatrix::sum(linag::vector<int> a){
     return sum;
 }
 
-double** linag::generateLSData(int n,linag::vector<int> notzero) {
-    double** A = (double**)malloc(n* sizeof(double*));
-    for(int i=0;i<n;++i){
-        A[i] = (double*)malloc(n* sizeof(double));
-    }
-    //generate data
+
+template <typename T>
+linag::Vector<T> linag::conjugateGradientSolver(linag::DenseMatrix<T> A,linag::Vector<T> b,linag::Vector<T> x,double tau){
+    linag::Vector<T> r1(A.dim().rows);
+    linag::Vector<T> r2(A.dim().rows);
+    linag::Vector<T> d(A.dim().rows);
+    linag::Vector<T> res(A.dim().rows);
+    T alpha;
+    T betta;
+    unsigned long t = 0;
+    r1 = b - prod(A,x);
+    d = r1;
+    do{
+        alpha = linag::prod(r1,r1)/linag::prod(linag::prod(d,A),d);
+        res = res + linag::prod(linag::prod(alpha,A),d);
+        r2 = r1 - linag::prod(linag::prod(alpha,A),d);
+        betta = linag::prod(r2,r2)/linag::prod(r1,r1);
+        d = r2 + linag::prod(betta,d);
+
+        r1=r2;
+    }while (r2.norm()>tau);
 
 
-    return A;
+    return res;
 }
 
-linag::vector<double> conjugateGradientSolver(double** data,int n,double* b,double* x,double tau){
-    double* r0 = (double*)malloc(n* sizeof(double));
-    double* r1 = (double*)malloc(n* sizeof(double));
-    double alpha0;
-    double alpha1;
 
-}
-
-linag::SparseMatrix* linag::SparseMatrix::transpose() {
-    linag::SparseMatrix* trans = new linag::SparseMatrix(*this); //copy this matrix
-    //transpose:
-    int vc = 0;
-    int Ic = 0;
-    int Jc=0;
-    for (int i = 0; i < trans->getI().length; ++i) {
-        trans->setI().data[i] = 0;
-    }
-    for (int i = 0; i < trans->size()[0]; ++i) {    //cols
-        for (int j = 0; j < trans->getv().length; ++j) {
-              if(v.data[j] == i){
-                  //increment number of elements in this col (=rowptr after trans)
-                  ++trans->setI().data[i];
-                  //calculate new col index
-
-
-
-                  //change order of elements in v
-                  trans->setv().data[vc++] = v.data[j];
-              }
-        }
-    }
-
-
-    return trans;//trans is  pointer. use delete();
-}
-
-linag::matrix<double> linag::SparseMatrix::todense() {
-    linag::matrix<double> M={};
+template <typename T>
+linag::matrix<T> linag::SparseMatrix<T>::todense() {
+    linag::matrix<T> M={};
     M.rows = rows;
     M.cols = cols;
-    M.data = (double**)malloc(rows* sizeof(double*));
+    M.data = (T**)malloc(rows* sizeof(T*));
     for (int i = 0; i < rows; ++i) {
         //calloc allocates the memory and sets all values to 0
         M.data[i] = (double*)calloc(cols, sizeof(double));
@@ -168,10 +155,68 @@ linag::matrix<double> linag::SparseMatrix::todense() {
     return M;//use freeMatrix to free M.data
 }
 
+template<typename T>
+linag::DenseMatrix<T>& linag::DenseMatrix<T>::operator=(const linag::DenseMatrix<T> &){
 
-void linag::freeMatrix(matrix<double> &M){
-    for (int i = 0; i < M.rows; ++i) {
-        free(M.data[i]);
+}
+
+template <typename T>
+linag::DenseMatrix<T> linag::genRandomMatrix(int n,int numberOfZerosPerLine){
+    assert(numberOfZerosPerLine<n);
+
+    srand (time(NULL));
+
+    linag::DenseMatrix<T> randMatrix(n,n);
+    linag::DenseMatrix<T> res(n,n);
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < i+1; ++j) {
+            randMatrix->at(i,j) = rand();
+        }
+        for (int j = i+1; j < n; ++j) {
+            randMatrix->at(i,j) = 0;
+        }
     }
-    free(M.data);
+
+    randMatrix = linag::prod(randMatrix,linag::trans(randMatrix));
+    int index;
+    for (int i = 0; i < n; ++i) {   //rows
+        int zerosInThisRow = 0;
+        for (int l = 0; l <i; ++l) {
+            if(std::abs(res.at(i,l))<10e-10)
+                ++zerosInThisRow;
+        }
+        for (int k = 0; k < numberOfZerosPerLine-zerosInThisRow; ++k) {
+            do{
+                index = (int)floor((i)+(rand()/RAND_MAX)*(n-(i+1)));
+            }while(std::abs(res.at(i,index))<10e-10);
+            res.at(i,index) = 0;
+        }
+        for (int j = i+1; j < n; ++j) {
+            if(abs(res.at(i,j))<10e-10)
+                res.at(i,j) = 0;
+        }
+    }
+
+    return res;
+}
+
+template <typename T>
+linag::DenseMatrix<T> linag::trans(linag::DenseMatrix<T> other){
+    linag::DenseMatrix<T> res(other.cols,other.rows);
+    for (int i = 0; i < res.rows; ++i) {
+        for (int j = 0; j < res.cols; ++j) {
+            res.at(i,j) = res.at(j,i);
+        }
+    }
+    return res;
+}
+
+template <typename T>
+double linag::Vector<T>::norm(){
+    double sum = 0;
+    for(int j = 0; j<l;++j) {
+        sum += std::abs(data[j]) * std::abs(data[j]);
+    }
+    return std::sqrt(sum);
 }
