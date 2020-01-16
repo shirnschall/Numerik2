@@ -284,6 +284,7 @@ date=short                % Datumsformat
 
 \crefname{section}{Abschnitt}{Abschnitt}
 
+\setlength\parindent{0pt}
 \begin{document}
 	\newgeometry{bottom=1cm,top=1cm,left=1cm,right=1cm}
 	\begin{titlepage}
@@ -330,19 +331,19 @@ date=short                % Datumsformat
 	\section{Einleitung}
 	\newpage
 	
-	\section{cg}
+	\section{CG-Verfahren (Conjugate Gradients)}
 	
 	\begin{algorithm}[H]
-		\textbf{Input:} Sei A$\in$ $\mathbb{R}^{n\times n}, b, x_0 \in \mathbb{R}^{n}$ und eine Toleranz $\tau > 0$
+		\textbf{Input:} Sei $A\in$ $\mathbb{R}^{n\times n}, b, x_0 \in \mathbb{R}^{n}$ und eine Toleranz $\tau > 0$
 		\begin{algorithmic}[1]
 			\State $r_0 = b - Ax_0$
 			\State $d_0 = r_0$
 			\State $t = 0$
 			\While{$ \norm{r_t} > \tau $}
 			\State $\alpha_t = \frac{r_t^{T}r_t}{d_t^{T}Ad_t}$
-			\State $x_{t+1} = x_{t+1} + \alpha_t d_t$
+			\State $x_{t+1} = x_{t} + \alpha_t d_t$
 			\State $r_{t+1} = r_t - \alpha_t Ad_t$
-			\State $\beta_k = \frac{r_{t+1}^{T}r_{t+1}}{r_t^{T}r_t}$
+			\State $\beta_t = \frac{r_{t+1}^{T}r_{t+1}}{r_t^{T}r_t}$
 			\State $d_{t+1} = r_{t+1} + \beta_td_t$
 			\State $t = t + 1$
 			\EndWhile
@@ -352,10 +353,27 @@ date=short                % Datumsformat
 		\caption{CG-Verfahren} \label{alg:cg}
 	\end{algorithm}
 	
-	Nun stellt sich die Frage, ob \cref{alg:cg} äquivalent zum Algorithmus \autocite[vgl.][101]{skript} und welches bevorzugt wird.
+	Nun stellt sich die Frage, ob \cref{alg:cg} äquivalent zum Algorithmus 8.10 \autocite[101]{skript} ist und welches bevorzugt wird.
 	
 	\newpage
-	Die spektrale Konditionszahl $cond(A) = definition$ definiert die Konvergenzgeschwindigkeit des CG-Verfahrens. Durch lösen des vorkonditionierten Systems
+	
+	Da man beim lösen linearer Gleichungssysteme oft mit großen, dünn besetzten Matrizen arbeitet, ist es nicht sinnvoll die ganze Matrix im Rechner zu speichern. Deshalb bietet sich das sogenannte \textit{"compressed spare row"} Format, welches nur die Einträge der Matrix ungleich null betrachtet und mit diesen rechnet. Bei der Implementierung dieses Formats werden anstelle aller Einträge $A_{i,j}, i,j = 1,\ldots,n$ einer Matrix $A\in$ $\mathbb{R}^{n\times n}$ ein Vektor $v\in\mathbb{R}^{m}$ aller Einträge ungleich Null, ein Vektor $J\in\mathbb{N}_0^{m}$ von Spaltenindizes und ein Vektor $I\in\mathbb{N}_0^{n+1}$ gespeichert.
+	
+	Die $i-$te Zeile von A ist gegeben durch
+	\begin{align*}
+		A_{i,j} = 
+		\begin{cases}
+			\textit{$v_{k(j)}$},&\quad\textit{falls $j \in \{J_{I_i}, J_{I_{i}} + 1, \ldots, J_{I_{i+1}} - 1$}\}\\
+			\textit{0},&\quad\textit{sonst}\\
+		\end{cases}
+	\end{align*} 
+	wobei $J_{k_{(j)}} = j$.\\
+	
+	Eine Möglichkeit das Format zu implementieren ist wie folgt:
+	
+	hier code
+	
+	Die spektrale Konditionszahl $cond(A) = \frac{\lambda_{max}(A)}{\lambda_{min}(A)}$ definiert die Konvergenzgeschwindigkeit des CG-Verfahrens. Durch lösen des vorkonditionierten Systems
 	\begin{align*}
 		D^{-1}AD^{-T}y = D^{-1}b
 	\end{align*}
@@ -373,10 +391,10 @@ date=short                % Datumsformat
 			\State $t = 0$
 			\While{$ \norm{r_t} > \tau $}
 			\State $\alpha_t = \frac{r_t^{T}z_t}{d_t^{T}Ad_t}$
-			\State $x_{t+1} = x_{t+1} + \alpha_t d_t$
+			\State $x_{t+1} = x_{t} + \alpha_t d_t$
 			\State $r_{t+1} = r_t - \alpha_t Ad_t$
 			\State $z_{t+1} = P^{-1}r_{t+1}$
-			\State $\beta_k = \frac{z_{t+1}^{T}r_{t+1}}{z_tr_t}$
+			\State $\beta_t = \frac{z_{t+1}^{T}r_{t+1}}{z_tr_t}$
 			\State $d_{t+1} = r_{t+1} + \beta_td_t$
 			\State $t = t + 1$
 			\EndWhile
