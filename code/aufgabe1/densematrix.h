@@ -10,6 +10,7 @@
 #include </usr/local/include/eigen3/Eigen/Dense>
 #include </usr/local/include/eigen3/Eigen/Eigenvalues>
 #include <iostream>
+#include <string.h>
 
 namespace linag {
 
@@ -22,6 +23,9 @@ public:
     DenseMatrix(int rows,int cols);
     DenseMatrix(linag::size dimension);
     ~DenseMatrix();
+
+    DenseMatrix(std::initializer_list<std::initializer_list<T>> init);
+
 
     DenseMatrix(const DenseMatrix<T> &rhs);
     DenseMatrix<T> &operator=(const DenseMatrix<T> &rhs);
@@ -39,6 +43,9 @@ public:
     Vector<T> colToVector(int col);
     Vector<T> rowToVector(int row);
     const size dim() const;
+
+    void zeros();
+    void id();
 };
 
     template<typename T>
@@ -62,18 +69,13 @@ std::ostream& operator<<(std::ostream& output,const DenseMatrix<T>& x);
 
 }
 
-//
-// Created by Sebastian Hirnschall on 17.01.20.
-//
 
-#include "densematrix.h"
-#include <string.h>
 
 template<typename T>
 std::ostream& linag::operator<<(std::ostream& output,const linag::DenseMatrix<T>& x){
     for (int i = 0; i < x.dim().rows; ++i) {
         for (int j = 0; j < x.dim().cols; ++j) {
-            output << x.at(i,j);
+            output << x.at(i,j) << ",\t";
         }
         output << '\n';
     }
@@ -96,7 +98,7 @@ const linag::Vector<T> linag::operator*(const linag::DenseMatrix<T>& x,const lin
 }
 
 template<typename T>
-const linag::Vector<T> operator*(const linag::Vector<T>& x,const linag::DenseMatrix<T>& y){
+const linag::Vector<T> linag::operator*(const linag::Vector<T>& x,const linag::DenseMatrix<T>& y){
     assert(y.dim() == x.dim().rows);
 
     auto res = linag::Vector<T>(x.dim().cols);
@@ -111,7 +113,7 @@ const linag::Vector<T> operator*(const linag::Vector<T>& x,const linag::DenseMat
 }
 
 template<typename T>
-const linag::DenseMatrix<T> operator*(const T x,const linag::DenseMatrix<T>& y){
+const linag::DenseMatrix<T> linag::operator*(const T x,const linag::DenseMatrix<T>& y){
     auto res = linag::DenseMatrix<T>(y.dim());
     for (int i = 0; i < y.dim().rows; ++i) {
         for (int j = 0; j < y.dim().cols; ++j) {
@@ -122,12 +124,12 @@ const linag::DenseMatrix<T> operator*(const T x,const linag::DenseMatrix<T>& y){
 }
 
 template<typename T>
-const linag::DenseMatrix<T> operator*(const linag::DenseMatrix<T>& x,const T y){
+const linag::DenseMatrix<T> linag::operator*(const linag::DenseMatrix<T>& x,const T y){
     return y*x;
 }
 
 template<typename T>
-const linag::DenseMatrix<T> operator*(const linag::DenseMatrix<T>& x,const linag::DenseMatrix<T>& y){
+const linag::DenseMatrix<T> linag::operator*(const linag::DenseMatrix<T>& x,const linag::DenseMatrix<T>& y){
     assert(x.dim().cols==y.dim().rows);
 
     auto res = linag::DenseMatrix<T>(x.dim().rows,y.dim().cols);
@@ -145,7 +147,7 @@ const linag::DenseMatrix<T> operator*(const linag::DenseMatrix<T>& x,const linag
 
 
 template<typename T>
-const linag::DenseMatrix<T> operator-(const linag::DenseMatrix<T>& x,const linag::DenseMatrix<T>& y){
+const linag::DenseMatrix<T> linag::operator-(const linag::DenseMatrix<T>& x,const linag::DenseMatrix<T>& y){
     assert(x.dim().cols==y.dim().cols && x.dim().rows==y.dim().rows);
 
     auto res = linag::DenseMatrix<T>(x.dim().rows,x.dim().cols);
@@ -159,7 +161,7 @@ const linag::DenseMatrix<T> operator-(const linag::DenseMatrix<T>& x,const linag
 }
 
 template<typename T>
-const linag::DenseMatrix<T> operator+(const linag::DenseMatrix<T>& x,const linag::DenseMatrix<T>& y){
+const linag::DenseMatrix<T> linag::operator+(const linag::DenseMatrix<T>& x,const linag::DenseMatrix<T>& y){
     return x-(-y);
 }
 
@@ -236,28 +238,30 @@ const linag::DenseMatrix<T> linag::DenseMatrix<T>::inverse() const{
 
     //gauss-jordan
     for (int k = 0; k < dim().cols; ++k) {
+    //int k = 2;
         T diagValue = cpy.at(k,k);
-        for (int i = 0; i < dim().rows; ++i) {
-            cpy.at(i,k) /= diagValue;
-            res.at(i,k) /= diagValue;
+        for (int i = 0; i < dim().cols; ++i) {
+            cpy.at(k,i) /= diagValue;
+            res.at(k,i) /= diagValue;
         }
         for (int i = 0; i < dim().rows; ++i) {
             if(i==k)
                 continue;
             T rowMult = cpy.at(i,k);
-            for (int j = i; j <dim().cols; ++j) {
+            for (int j = 0; j < dim().cols; ++j) {
                 cpy.at(i,j) -= rowMult * cpy.at(k,j);
-                res.at(i,j) -= rowMult * cpy.at(k,j);
+                res.at(i,j) -= rowMult * res.at(k,j);
             }
         }
     }
+    //std::cout << cpy << std::endl << res << std::endl;
 
     return res;
 }
 
 template<typename T>
 const linag::DenseMatrix<T> linag::DenseMatrix<T>::operator-() const{
-    return -1* (*this);
+    return (T)-1* (*this);
 }
 
 template <typename T>
@@ -306,6 +310,34 @@ linag::DenseMatrix<T>::DenseMatrix(const DenseMatrix<T> &rhs){
 }
 
 template <typename T>
+linag::DenseMatrix<T>::DenseMatrix(std::initializer_list<std::initializer_list<T>> init){
+    dimension.rows = init.size();
+    dimension.cols = init.begin()->size();
+    //check if all rows have same length
+    for(auto row : init){
+        assert(dim().cols == row.size());
+    }
+
+    if(dim().rows*dim().cols > 0)
+    {
+        data = (T*) malloc(dim().rows * dim().cols * sizeof(T));
+        assert(data != nullptr);
+        //copy
+        int i=0,j;
+        for(auto row:init) {
+            j=0;
+            for (auto item:row) {
+                at(i,j) = item;
+                ++j;
+            }
+            ++i;
+        }
+    }
+    else
+        data = (T*) nullptr;
+}
+
+template <typename T>
 linag::DenseMatrix<T>::~DenseMatrix(){
     if(data!= nullptr)
         free(data);
@@ -333,6 +365,27 @@ linag::DenseMatrix<T>::DenseMatrix(int rows,int cols){
     }
     else
         data = (T*) nullptr;
+}
+
+template <typename T>
+void linag::DenseMatrix<T>::zeros(){
+    for (int i = 0; i < dim().rows; ++i) {
+        for (int j = 0; j < dim().cols; ++j) {
+            at(i,j) = (T)0;
+        }
+    }
+}
+
+template <typename T>
+void linag::DenseMatrix<T>::id(){
+    for (int i = 0; i < dim().rows; ++i) {
+        for (int j = 0; j < dim().cols; ++j) {
+            if(i==j)
+                at(i,j) = 1;
+            else
+                at(i,j) = (T)0;
+        }
+    }
 }
 
 
