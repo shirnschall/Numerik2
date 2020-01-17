@@ -5,6 +5,8 @@
 #ifndef AUFGABE1_VECTOR_H
 #define AUFGABE1_VECTOR_H
 
+#include <iostream>
+
 namespace linag {
 
     template<typename T>
@@ -13,10 +15,9 @@ namespace linag {
         int length;
         T *data;
     public:
-        Vector();
         ~Vector();
 
-        Vector(Vector<T>);
+        Vector(Vector<T> &);
         Vector<T> &operator=(const Vector<T> &);
         Vector(int length);
 
