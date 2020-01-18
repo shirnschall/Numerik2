@@ -321,6 +321,7 @@ date=short                % Datumsformat
 	\newline
 	\par\noindent
 	
+	Das Projekt beschäftigt sich mit dem Lösen linearer Gleichungssysteme der Form $Ax = b$ mit dünn besetzten Matrizen. Dabei werden verschiedene iterative Verfahren vorgestellt und deren Aufwand verglichen. Außerdem wird eine effiziente Methode gezeigt, Einträge ungleich Null einer dünn besetzten Matrix abzuspeichern, anstatt alle Einträge zu speichern. Es folgen des weiteren Plots zur Veranschaulichung der Konvergenzgeschwindigkeit der Verfahren.
 	\thispagestyle{firststyle}
 	
 	\newpage
@@ -329,10 +330,15 @@ date=short                % Datumsformat
 	\newpage
 
 	\section{Einleitung}
+	Um das Gleichungssystem $Ax = b$ zu lösen, kann man verschiedene Wege nutzen. Einerseits durch Bildung von $A^{-1}$ mithilfe verschiedener Zerlegungen. Der Aufwand dieser Lösungsmöglichkeit wird am Anfang kurz untersucht. Andererseits können iterative Verfahren genutzt werden. In diesem Projekt wird genauer auf das CG-Verfahren (Conjugate Gradients) eingegangen. Dabei werden Aufwand und Konvergenzgeschwindigkeit untersucht, sowie eine mögliche Implementierung vorgestellt.  Weiteres sei Angemerkt, dass beim Implementieren die Eigen-und Time Bibliothek genutzt wurde.
 	\newpage
+	
+	\section{Aufwand einer symmetrisch positiv definiten Zufallsmatrix}
+	Beim lösen eines linearen Gleichungssystems der Form $Ax = b$ mit einer symmetrisch positiv definiten Zufallsmatrix $A\in\mathbb{R}^{n\times n}$ mit einer fixen Anzahl an Einträgen ungleich Null pro Zeile und $b \in \mathbb{R}^{n}$ erwartet man sich einen Aufwand abhängig von $n$ der Größe (muss noch nachschauen) dann code?
 	
 	\section{CG-Verfahren (Conjugate Gradients)}
 	
+	Bei großen dünn besetzten Matrizen ist eine direkte Methode wie z.B. die Cholesky-Zerlegung nicht effizient, deshalb bietet sich das CG-Verfahren an, wo vorausgesetzt wird, dass die Matrix positiv definit ist. Dieses ist äquivalent zur Minimierung der Energiefunktion $\phi(x) = \frac{1}{2}x^{T}Ax - x^{T}b$, also $grad\phi(x) = Ax - b = 0$, bei der Lösung handelt es sich um ein Minimum, da $A$ positiv definit ist. Beim Verfahren fängt man mit einem geschätzten Anfangsvektor $\hat{x}$ an. Man rechnet sich das Residuum $\hat{r} = A\hat{x} - b$ aus und nähert sich dann rekursiv zum eigentlich Vektor x an. Das Residuum ist monoton fallend und man kann das Verfahren abbrechen, wenn eine gewisse Toleranz $\tau > 0$ des Fehler erreicht worden ist, also wenn $\norm{\hat{r}} = \norm{A\hat{x} - b} < \tau$ gilt. Die Eindeutige Lösung bekommt man spätestens nach n Schritten, wobei n die Größe des Problems darstellt.
 	\begin{algorithm}[H]
 		\textbf{Input:} Sei $A\in$ $\mathbb{R}^{n\times n}, b, x_0 \in \mathbb{R}^{n}$ und eine Toleranz $\tau > 0$
 		\begin{algorithmic}[1]
@@ -353,7 +359,14 @@ date=short                % Datumsformat
 		\caption{CG-Verfahren} \label{alg:cg}
 	\end{algorithm}
 	
-	Nun stellt sich die Frage, ob \cref{alg:cg} äquivalent zum Algorithmus 8.10 \autocite[101]{skript} ist und welches bevorzugt wird.
+	Nun stellt sich die Frage, ob \cref{alg:cg} äquivalent zum Algorithmus 8.10 \autocite[101]{skript} ist und welches bevorzugt wird.\\
+	
+	Für die Iteration des CG-Verfahrens (ohne Abbruchkriterium) gilt die Fehlerabschätzung \autocite[vgl.][102]{skript}
+	\begin{align*}
+		\norm{x^{(t)} - A^{-1}b}_A \leq 2\left(\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1}\right)^{t}\norm{x^{(0)} - A^{-1}b}_A, \quad t\in\mathbb{N}
+	\end{align*}
+	
+	mit der spektralen Konditionszahl der Matrix $\kappa = \frac{\lambda_{max}(A)}{\lambda_{min}(A)}$.
 	
 	\newpage
 	
@@ -373,7 +386,7 @@ date=short                % Datumsformat
 	
 	hier code
 	
-	Die spektrale Konditionszahl $cond(A) = \frac{\lambda_{max}(A)}{\lambda_{min}(A)}$ definiert die Konvergenzgeschwindigkeit des CG-Verfahrens. Durch lösen des vorkonditionierten Systems
+	Die spektrale Konditionszahl definiert die Konvergenzgeschwindigkeit des CG-Verfahrens. Durch lösen des vorkonditionierten Systems
 	\begin{align*}
 		D^{-1}AD^{-T}y = D^{-1}b
 	\end{align*}
