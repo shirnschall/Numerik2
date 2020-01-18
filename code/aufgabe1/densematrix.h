@@ -5,23 +5,23 @@
 #ifndef AUFGABE1_DENSEMATRIX_H
 #define AUFGABE1_DENSEMATRIX_H
 
-#include "linag.h"
 //eigen lib
 #include </usr/local/include/eigen3/Eigen/Dense>
 #include </usr/local/include/eigen3/Eigen/Eigenvalues>
 #include <iostream>
 #include <string.h>
+#include "size.h"
+#include "vector.h"
 
 namespace linag {
-
 template<typename T>
 class DenseMatrix{
 private:
-    size dimension;
+    Size dimension;
     T* data;
 public:
     DenseMatrix(int rows,int cols);
-    DenseMatrix(linag::size dimension);
+    DenseMatrix(linag::Size dimension);
     ~DenseMatrix();
 
     DenseMatrix(std::initializer_list<std::initializer_list<T>> init);
@@ -42,13 +42,15 @@ public:
     const T& at(int row,int col) const;
     Vector<T> colToVector(int col);
     Vector<T> rowToVector(int row);
-    const size dim() const;
+    const Size dim() const;
 
     void zeros();
     void id();
+
+    Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau);
 };
 
-    template<typename T>
+template<typename T>
 const DenseMatrix<T> operator+(const DenseMatrix<T>& x,const DenseMatrix<T>& y);
 template<typename T>
 const DenseMatrix<T> operator-(const DenseMatrix<T>& x,const DenseMatrix<T>& y);
@@ -84,13 +86,13 @@ std::ostream& linag::operator<<(std::ostream& output,const linag::DenseMatrix<T>
 
 template<typename T>
 const linag::Vector<T> linag::operator*(const linag::DenseMatrix<T>& x,const linag::Vector<T>& y){
-    assert(y.dim() == x.dim().cols);
+    assert(x.dim().cols == y.dim().cols*y.dim().rows);
 
-    auto res = linag::Vector<T>(x.dim().rows);
+    linag::Vector<T> res(x.dim().rows);
 
-    for (int i = 0; i < res.dim(); ++i) {
+    for (int i = 0; i < res.dim().rows*res.dim().cols; ++i) {
         res.at(i) = 0;
-        for (int j = 0; j < y.dim(); ++j) {
+        for (int j = 0; j < x.dim().cols; ++j) {
             res.at(i) += x.at(i,j) * y.at(j);
         }
     }
@@ -99,14 +101,14 @@ const linag::Vector<T> linag::operator*(const linag::DenseMatrix<T>& x,const lin
 
 template<typename T>
 const linag::Vector<T> linag::operator*(const linag::Vector<T>& x,const linag::DenseMatrix<T>& y){
-    assert(y.dim() == x.dim().rows);
+    assert(y.dim().rows == x.dim().cols*x.dim().rows);
 
-    auto res = linag::Vector<T>(x.dim().cols);
+    linag::Vector<T> res(y.dim().cols);
 
-    for (int i = 0; i < res.dim(); ++i) {
+    for (int i = 0; i < res.dim().rows*res.dim().cols; ++i) {
         res.at(i) = 0;
-        for (int j = 0; j < y.dim(); ++j) {
-            res.at(i) += x.at(j,i) * y.at(j);
+        for (int j = 0; j < y.dim().rows; ++j) {
+            res.at(i) += x.at(j) * y.at(i,j);
         }
     }
     return res;
@@ -114,7 +116,7 @@ const linag::Vector<T> linag::operator*(const linag::Vector<T>& x,const linag::D
 
 template<typename T>
 const linag::DenseMatrix<T> linag::operator*(const T x,const linag::DenseMatrix<T>& y){
-    auto res = linag::DenseMatrix<T>(y.dim());
+    linag::DenseMatrix<T> res(y.dim());
     for (int i = 0; i < y.dim().rows; ++i) {
         for (int j = 0; j < y.dim().cols; ++j) {
             res.at(i,j) = x*y.at(i,j);
@@ -132,7 +134,7 @@ template<typename T>
 const linag::DenseMatrix<T> linag::operator*(const linag::DenseMatrix<T>& x,const linag::DenseMatrix<T>& y){
     assert(x.dim().cols==y.dim().rows);
 
-    auto res = linag::DenseMatrix<T>(x.dim().rows,y.dim().cols);
+    linag::DenseMatrix<T> res(x.dim().rows,y.dim().cols);
 
     for (int i = 0; i < res.dim().rows; ++i) {
         for (int j = 0; j < res.dim().cols; ++j) {
@@ -150,7 +152,7 @@ template<typename T>
 const linag::DenseMatrix<T> linag::operator-(const linag::DenseMatrix<T>& x,const linag::DenseMatrix<T>& y){
     assert(x.dim().cols==y.dim().cols && x.dim().rows==y.dim().rows);
 
-    auto res = linag::DenseMatrix<T>(x.dim().rows,x.dim().cols);
+    linag::DenseMatrix<T> res(x.dim().rows,x.dim().cols);
 
     for (int i = 0; i < x.dim().rows; ++i) {
         for (int j = 0; j < x.dim().cols; ++j) {
@@ -166,7 +168,7 @@ const linag::DenseMatrix<T> linag::operator+(const linag::DenseMatrix<T>& x,cons
 }
 
 template<typename T>
-const linag::size linag::DenseMatrix<T>::dim() const{
+const linag::Size linag::DenseMatrix<T>::dim() const{
     return dimension;
 }
 
@@ -174,7 +176,7 @@ template<typename T>
 linag::Vector<T> linag::DenseMatrix<T>::rowToVector(int row){
     assert(dim().row >= 0 && dim().cols < dim().rows);
 
-    auto res = linag::Vector<T>(dim().cols);
+    linag::Vector<T> res(dim().cols);
 
     for (int i = 0; i < res.dim(); ++i) {
         res.at(i) = at(row,i);
@@ -186,7 +188,7 @@ template<typename T>
 linag::Vector<T> linag::DenseMatrix<T>::colToVector(int col){
     assert(col >= 0 && col < dim().cols);
 
-    auto res = linag::Vector<T>(dim().rows);
+    linag::Vector<T> res(dim().rows);
 
     for (int i = 0; i < res.dim(); ++i) {
         res.at(i) = at(i,col);
@@ -210,7 +212,7 @@ T& linag::DenseMatrix<T>::at(int row,int col){
 
 template<typename T>
 const linag::DenseMatrix<T> linag::DenseMatrix<T>::transpose() const{
-    auto res = linag::DenseMatrix<T>(dim().cols,dim().cols);
+    linag::DenseMatrix<T> res(dim().cols,dim().cols);
 
     for (int i = 0; i < dim().rows; ++i) {
         for (int j = 0; j < dim().cols; ++j) {
@@ -225,7 +227,7 @@ const linag::DenseMatrix<T> linag::DenseMatrix<T>::inverse() const{
     assert(dim().rows == dim().cols);
 
     linag::DenseMatrix<T> cpy(*this);
-    auto res = linag::DenseMatrix<T>(dim());
+    linag::DenseMatrix<T> res(dim());
 
     for (int i = 0; i < dim().rows; ++i) {
         for (int j = 0; j < dim().cols; ++j) {
@@ -344,7 +346,7 @@ linag::DenseMatrix<T>::~DenseMatrix(){
 }
 
 template <typename T>
-linag::DenseMatrix<T>::DenseMatrix(linag::size dimension):dimension(dimension){
+linag::DenseMatrix<T>::DenseMatrix(linag::Size dimension):dimension(dimension){
     if(dim().rows*dim().cols > 0)
     {
         data = (T*) malloc(dim().rows * dim().cols * sizeof(T));
@@ -388,6 +390,35 @@ void linag::DenseMatrix<T>::id(){
     }
 }
 
+template <typename T>
+linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau){
+    assert(tau>0);
+
+    linag::Vector<T> r1(dim().rows);
+    linag::Vector<T> r2(dim().rows);
+    linag::Vector<T> d(dim().rows);
+    linag::Vector<T> x(dim().rows);
+    x.rand();
+    T alpha;
+    T betta;
+    unsigned long t = 0;
+    r1 = b - (*this)*x;
+    std::cout << x << std::endl<< (*this)*x << std::endl << b - (*this)*x<<std::endl;
+    d = r1;
+
+    do{
+        linag::Vector<T> z((*this)*d);
+        alpha = (r1*r1)/(d*z);
+        x = x + alpha*z;
+        r2 = r1 - alpha*z;
+        betta = (r2*r2)/(r1*r1);
+        d = r2 + betta*d;
+
+        r1=r2;
+    }while (r2.l2norm()>tau);
+
+    return x;
+}
 
 
 #endif //AUFGABE1_DENSEMATRIX_H

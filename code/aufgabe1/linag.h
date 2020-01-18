@@ -5,13 +5,13 @@
 #ifndef AUFGABE1_LINAG_H
 #define AUFGABE1_LINAG_H
 
-#include "sparsematrix.h"
+//#include "sparsematrix.h"
 #include "densematrix.h"
 #include "vector.h"
 
 
 namespace linag {
-    struct size {
+    struct size{
         int rows,cols;
     };
 }

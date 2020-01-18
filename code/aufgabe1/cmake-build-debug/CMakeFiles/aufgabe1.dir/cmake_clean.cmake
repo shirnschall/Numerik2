@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "CMakeFiles/aufgabe1.dir/main.cpp.o"
-  "CMakeFiles/aufgabe1.dir/sparsematrix.cpp.o"
   "aufgabe1.pdb"
   "aufgabe1"
 )

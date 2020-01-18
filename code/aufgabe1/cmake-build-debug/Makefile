@@ -150,33 +150,6 @@ main.cpp.s:
 	$(MAKE) -f CMakeFiles/aufgabe1.dir/build.make CMakeFiles/aufgabe1.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-sparsematrix.o: sparsematrix.cpp.o
-
-.PHONY : sparsematrix.o
-
-# target to build an object file
-sparsematrix.cpp.o:
-	$(MAKE) -f CMakeFiles/aufgabe1.dir/build.make CMakeFiles/aufgabe1.dir/sparsematrix.cpp.o
-.PHONY : sparsematrix.cpp.o
-
-sparsematrix.i: sparsematrix.cpp.i
-
-.PHONY : sparsematrix.i
-
-# target to preprocess a source file
-sparsematrix.cpp.i:
-	$(MAKE) -f CMakeFiles/aufgabe1.dir/build.make CMakeFiles/aufgabe1.dir/sparsematrix.cpp.i
-.PHONY : sparsematrix.cpp.i
-
-sparsematrix.s: sparsematrix.cpp.s
-
-.PHONY : sparsematrix.s
-
-# target to generate assembly for a file
-sparsematrix.cpp.s:
-	$(MAKE) -f CMakeFiles/aufgabe1.dir/build.make CMakeFiles/aufgabe1.dir/sparsematrix.cpp.s
-.PHONY : sparsematrix.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -189,9 +162,6 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... sparsematrix.o"
-	@echo "... sparsematrix.i"
-	@echo "... sparsematrix.s"
 .PHONY : help
 
 

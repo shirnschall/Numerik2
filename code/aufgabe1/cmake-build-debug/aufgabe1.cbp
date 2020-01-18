@@ -80,13 +80,16 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/shirnschall/Desktop/Numerik2/code/aufgabe1/densematrix.h">
+			<Option target="aufgabe1"/>
+		</Unit>
 		<Unit filename="/Users/shirnschall/Desktop/Numerik2/code/aufgabe1/main.cpp">
 			<Option target="aufgabe1"/>
 		</Unit>
-		<Unit filename="/Users/shirnschall/Desktop/Numerik2/code/aufgabe1/sparsematrix.cpp">
+		<Unit filename="/Users/shirnschall/Desktop/Numerik2/code/aufgabe1/size.h">
 			<Option target="aufgabe1"/>
 		</Unit>
-		<Unit filename="/Users/shirnschall/Desktop/Numerik2/code/aufgabe1/sparsematrix.hpp">
+		<Unit filename="/Users/shirnschall/Desktop/Numerik2/code/aufgabe1/vector.h">
 			<Option target="aufgabe1"/>
 		</Unit>
 		<Unit filename="/Users/shirnschall/Desktop/Numerik2/code/aufgabe1/CMakeLists.txt">
