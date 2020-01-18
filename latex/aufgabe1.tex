@@ -334,7 +334,7 @@ date=short                % Datumsformat
 	\newpage
 	
 	\section{Aufwand einer symmetrisch positiv definiten Zufallsmatrix}
-	Beim lösen eines linearen Gleichungssystems der Form $Ax = b$ mit einer symmetrisch positiv definiten Zufallsmatrix $A\in\mathbb{R}^{n\times n}$ mit einer fixen Anzahl an Einträgen ungleich Null pro Zeile und $b \in \mathbb{R}^{n}$ erwartet man sich einen Aufwand abhängig von $n$ der Größe (muss noch nachschauen) dann code?
+	Beim lösen eines linearen Gleichungssystems der Form $Ax = b$ mit einer symmetrisch positiv definiten Zufallsmatrix $A\in\mathbb{R}^{n\times n}$ mit einer fixen Anzahl an Einträgen ungleich Null pro Zeile und $b \in \mathbb{R}^{n}$, z.B. mittels Cholesky-Zerlegung welches das schnellste Verfahren ist, treten $\frac{1}{3}n^{3} + \mathcal{O}(n^{2})$ arithmetische Operationen, also einen kubischen Aufwand. 
 	
 	\section{CG-Verfahren (Conjugate Gradients)}
 	
@@ -360,13 +360,25 @@ date=short                % Datumsformat
 	\end{algorithm}
 	
 	Nun stellt sich die Frage, ob \cref{alg:cg} äquivalent zum Algorithmus 8.10 \autocite[101]{skript} ist und welches bevorzugt wird.\\
+	\cref{alg:cg} beinhaltet lauter Vektor-Vektor Multiplikationen und zwei Matrix-Vektor Multiplikation, es ist klar, dass die Matrix-Vektor Multiplikation aufwendiger ist als die Vektor-Vektor Multiplikation. Im Algorithmus wird die selbe Matrix-Vektor Multiplikation durchgeführt, d.h. man braucht sich nur einmal das Ergebnis auszurechnen und abzuspeichern. Beim Algorithmus 8.10 gibt es wieder zwei Matrix-Vektor Multiplikationen die die Vektor-Vektor Multiplikationen dominieren. In diesen Algorithmus müssen jedoch zwei unterschiedliche Rechnungen durchgeführt werden, und damit ist \cref{alg:cg} effizienter. Man muss nur noch zeigen, dass die beiden Algorithmen dasselbe Ergebnis liefern.\\
+	
 	
 	Für die Iteration des CG-Verfahrens (ohne Abbruchkriterium) gilt die Fehlerabschätzung \autocite[vgl.][102]{skript}
 	\begin{align*}
 		\norm{x^{(t)} - A^{-1}b}_A \leq 2\left(\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1}\right)^{t}\norm{x^{(0)} - A^{-1}b}_A, \quad t\in\mathbb{N}
 	\end{align*}
 	
-	mit der spektralen Konditionszahl der Matrix $\kappa = \frac{\lambda_{max}(A)}{\lambda_{min}(A)}$.
+	mit der spektralen Konditionszahl der Matrix $\kappa(A) := \left|\frac{\lambda_{max}(A)}{\lambda_{min}(A)}\right|$ und der Energienorm $\norm{x}_A := \sqrt{(x,x)_A}$. Das Verfahren konvergiert für $\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1} < 1$, was offensichtlich gegeben ist, da $\kappa \geq 1$. Die Konvergenzgeschwindigkeit ist größer, wenn der Bruch minimal ist, also genau dann wenn die Eigenwerte der Matrix eng zusammenliegen. Wenn alle Eigenwerte gleich sind, dann gilt $\kappa = 1$ also $\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1} = 0$. Nun wird gezeigt wie der Fehler abhängig von $\kappa$ und die Anzahl der Iterationsschritte t gegen 0 konvergiert.
+	
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{../plots/fehler cg.png}
+		\end{center}
+		\caption{Fehlerkonvergenz abhängig von $\kappa$ und t gegen 0}
+		\label{fig:fehlercg}	
+	\end{figure}
+
+	Man sieht auf \cref{fig:fehlercg} dass die Konvergenz des CG-Verfahren schneller gegen ist, genau dann wenn die Eigenwerte eng zusammenliegen, also wenn $\kappa$ annähernd 1 ist. Der Bruch auf der y-Achse ist natürlich $\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1}$.
 	
 	\newpage
 	
@@ -394,7 +406,7 @@ date=short                % Datumsformat
 	\begin{align*}
 		x = D^{-T}y
 	\end{align*}
-	Man wählt die Matrix D so, dass für beliebige $z \in \mathbb{R}^{n}$ der Vektor $D^{-T}D^{-1}z$ einfach zu berechnen ist und zugleich, dass $cond(D^{-1}AD^{-T}) < cond(A)$ gilt.
+	Man wählt die Matrix D so, dass für beliebige $z \in \mathbb{R}^{n}$ der Vektor $D^{-T}D^{-1}z$ einfach zu berechnen ist und zugleich, dass $cond(D^{-1}AD^{-T}) < cond(A)$ gilt. D.h. mithilfe der Matrix $D$ wird das Spektrum (die Menge der Eigenwerte) kleiner, also liegen die Eigenwerte enger zusammen, womit die spektrale Konditionszahl kleiner wird, was soviel bedeutet, dass mit der Matrix $D^{-1}AD^{-T}$ das CG-Verfahren schneller konvergiert, wie in \cref{fig:fehlercg} zu sehen ist. 
 	\begin{algorithm}[H]
 		\textbf{Input:} Sei A$\in$ $\mathbb{R}^{n\times n}, x_0 \in \mathbb{R}^{n}, P:=DD^{T}$ und eine Toleranz $\tau > 0$
 		\begin{algorithmic}[1]
