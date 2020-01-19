@@ -9,7 +9,7 @@
 #include "Eigen/Dense"
 #include "Eigen/Eigenvalues"
 #include <iostream>
-#include <string.h>
+#include <cstring>
 #include "size.h"
 #include "vector.h"
 #include "sparsematrix.h"
@@ -86,6 +86,61 @@ const Vector<T> operator*(const DenseMatrix<T>& x,const Vector<T>& y);
 template<typename T>
 std::ostream& operator<<(std::ostream& output,const DenseMatrix<T>& x);
 
+//template spezialication
+
+    template <>
+    void linag::DenseMatrix<double >::rand(){
+        for (int i = 0; i < dim().rows; ++i) {
+            for (int j = 0; j < dim().cols; ++j) {
+                at(i,j) = (double)std::rand()/RAND_MAX;
+            }
+        }
+    }
+
+    template<>
+    void linag::DenseMatrix<double>::randLT() {
+        for (int i = 0; i < dim().cols; ++i) {
+            for (int j = 0; j < i+1; ++j) {
+                at(i,j) = (double)std::rand()/RAND_MAX;
+            }
+            for (int j = i+1; j < dim().rows; ++j) {
+                at(i,j) = 0;
+            }
+        }
+    }
+
+    template <>
+    void linag::DenseMatrix<double>::randDiag(){
+        int n = dim().cols<dim().rows?dim().cols:dim().rows;
+        for (int i = 0; i < n; ++i) {
+            at(i,i) = (double)std::rand()/RAND_MAX;
+        }
+    }
+
+    template<>
+    void linag::DenseMatrix<double>::randSPD(int notZeroPerLine) {
+        assert(isSymmetric() && notZeroPerLine <= dim().cols);
+
+        randLT();
+
+        (*this) = (*this) * transpose();
+
+        int index;
+        for (int i = 0; i < dim().cols; ++i) {   //rows
+            int zerosInThisRow = 0;
+            for (int l = 0; l <i; ++l) {
+                if(std::fabs(at(i,l))<10e-12)
+                    ++zerosInThisRow;
+            }
+            for (int k = 0; k < dim().cols - notZeroPerLine - zerosInThisRow; ++k) {
+                do{
+                    index = (int)floor((i+1)+((double)std::rand()/RAND_MAX)*(dim().cols-(i+1)));
+                }while(std::abs(at(i,index))<10e-10);
+                at(i,index) = 0;
+                at(index,i) = 0;
+            }
+        }
+    }
 
 }
 
@@ -443,35 +498,6 @@ char linag::DenseMatrix<T>::isSymmetric() const{
     return dim().cols == dim().rows?1:0;
 }
 
-template <>
-void linag::DenseMatrix<double >::rand(){
-    for (int i = 0; i < dim().rows; ++i) {
-        for (int j = 0; j < dim().cols; ++j) {
-            at(i,j) = (double)std::rand()/RAND_MAX;
-        }
-    }
-}
-
-template<>
-void linag::DenseMatrix<double>::randLT() {
-    for (int i = 0; i < dim().cols; ++i) {
-        for (int j = 0; j < i+1; ++j) {
-            at(i,j) = (double)std::rand()/RAND_MAX;
-        }
-        for (int j = i+1; j < dim().rows; ++j) {
-            at(i,j) = 0;
-        }
-    }
-}
-
-template <>
-void linag::DenseMatrix<double>::randDiag(){
-    int n = dim().cols<dim().rows?dim().cols:dim().rows;
-    for (int i = 0; i < n; ++i) {
-        at(i,i) = (double)std::rand()/RAND_MAX;
-    }
-}
-
 template <typename T>
 void linag::DenseMatrix<T>::diag(T value){
     int n = dim().cols<dim().rows?dim().cols:dim().rows;
@@ -480,30 +506,6 @@ void linag::DenseMatrix<T>::diag(T value){
     }
 }
 
-template<>
-void linag::DenseMatrix<double>::randSPD(int notZeroPerLine) {
-    assert(isSymmetric() && notZeroPerLine <= dim().cols);
-
-    randLT();
-
-    (*this) = (*this) * transpose();
-
-    int index;
-    for (int i = 0; i < dim().cols; ++i) {   //rows
-        int zerosInThisRow = 0;
-        for (int l = 0; l <i; ++l) {
-            if(std::fabs(at(i,l))<10e-12)
-                ++zerosInThisRow;
-        }
-        for (int k = 0; k < dim().cols - notZeroPerLine - zerosInThisRow; ++k) {
-            do{
-                index = (int)floor((i+1)+((double)std::rand()/RAND_MAX)*(dim().cols-(i+1)));
-            }while(std::abs(at(i,index))<10e-10);
-            at(i,index) = 0;
-            at(index,i) = 0;
-        }
-    }
-}
 
 //template <typename T>
 //linag::DenseMatrix<T>::DenseMatrix(const linag::SparseMatrix<T>& rhs):dimension(rhs.dim()){

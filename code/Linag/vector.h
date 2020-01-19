@@ -6,9 +6,11 @@
 #define AUFGABE1_VECTOR_H
 
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <time.h>
 #include <cmath>
+#include <cassert>
+#include <cstring>
 
 #include "size.h"
 
