@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/Users/shirnschall/Desktop/Numerik2/code/densematrix.h
+/Users/shirnschall/Desktop/Numerik2/code/Linag/densematrix.h
 /usr/local/include/eigen3/Eigen/Dense
 -
 /usr/local/include/eigen3/Eigen/Eigenvalues
@@ -16,23 +16,15 @@ iostream
 string.h
 -
 size.h
-/Users/shirnschall/Desktop/Numerik2/code/size.h
+/Users/shirnschall/Desktop/Numerik2/code/Linag/size.h
 vector.h
-/Users/shirnschall/Desktop/Numerik2/code/vector.h
+/Users/shirnschall/Desktop/Numerik2/code/Linag/vector.h
 
-/Users/shirnschall/Desktop/Numerik2/code/main.cpp
-iostream
--
-complex
--
-densematrix.h
-/Users/shirnschall/Desktop/Numerik2/code/densematrix.h
-vector.h
-/Users/shirnschall/Desktop/Numerik2/code/vector.h
+/Users/shirnschall/Desktop/Numerik2/code/Linag/size.h
 
-/Users/shirnschall/Desktop/Numerik2/code/size.h
+/Users/shirnschall/Desktop/Numerik2/code/Linag/sparsematrix.h
 
-/Users/shirnschall/Desktop/Numerik2/code/vector.h
+/Users/shirnschall/Desktop/Numerik2/code/Linag/vector.h
 iostream
 -
 stdlib.h
@@ -42,7 +34,17 @@ time.h
 math.h
 -
 size.h
-/Users/shirnschall/Desktop/Numerik2/code/size.h
+/Users/shirnschall/Desktop/Numerik2/code/Linag/size.h
+
+/Users/shirnschall/Desktop/Numerik2/code/main.cpp
+iostream
+-
+Linag/densematrix.h
+/Users/shirnschall/Desktop/Numerik2/code/Linag/densematrix.h
+Linag/vector.h
+/Users/shirnschall/Desktop/Numerik2/code/Linag/vector.h
+Linag/sparsematrix.h
+/Users/shirnschall/Desktop/Numerik2/code/Linag/sparsematrix.h
 
 /usr/local/include/eigen3/Eigen/Cholesky
 Core

@@ -9,8 +9,7 @@ namespace linag {
     class Size {
     public:
         int rows, cols;
-
-
+        //default operator=, shallow copy
 
     };
 
@@ -24,5 +23,6 @@ namespace linag {
         return !(lhs == rhs);
     }
 }
+
 
 #endif //AUFGABE1_SIZE_H

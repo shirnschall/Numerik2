@@ -80,6 +80,15 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/shirnschall/Desktop/Numerik2/code/Linag/densematrix.h">
+			<Option target="code"/>
+		</Unit>
+		<Unit filename="/Users/shirnschall/Desktop/Numerik2/code/Linag/sparsematrix.h">
+			<Option target="code"/>
+		</Unit>
+		<Unit filename="/Users/shirnschall/Desktop/Numerik2/code/Linag/vector.h">
+			<Option target="code"/>
+		</Unit>
 		<Unit filename="/Users/shirnschall/Desktop/Numerik2/code/main.cpp">
 			<Option target="code"/>
 		</Unit>

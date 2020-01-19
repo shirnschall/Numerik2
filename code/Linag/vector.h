@@ -8,7 +8,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
-#include <math.h>
+#include <cmath>
 
 #include "size.h"
 
@@ -34,12 +34,14 @@ namespace linag {
         const T &at(int index) const;
 
         const Size dim() const;
+        unsigned long length() const;
 
         double l2norm();
 
         void zeros();
         void ones();
         void rand();
+
     };
 
     template<typename T>
@@ -139,10 +141,15 @@ double linag::Vector<T>::l2norm(){
     double sum = 0;
     for (int i = 0; i < dim().rows; ++i) {
         for (int j = 0; j < dim().cols; ++j) {
-            sum += fabs(at(i+j)*at(i+j));
+            sum += std::fabs(double((at(i+j)*at(i+j))));
         }
     }
-    return sqrt(sum);
+    return std::sqrt(sum);
+}
+
+template <typename T>
+unsigned long linag::Vector<T>::length() const{
+    return dim().rows*dim().cols;
 }
 
 template <typename T>

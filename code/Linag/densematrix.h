@@ -12,6 +12,7 @@
 #include <string.h>
 #include "size.h"
 #include "vector.h"
+#include "sparsematrix.h"
 
 namespace linag {
 template<typename T>
@@ -30,6 +31,12 @@ public:
     DenseMatrix(const DenseMatrix<T> &rhs);
     DenseMatrix<T> &operator=(const DenseMatrix<T> &rhs);
 
+
+    DenseMatrix(const SparseMatrix<T>& rhs);
+    DenseMatrix<T> &operator=(const SparseMatrix<T> &rhs);
+
+
+
     operator Eigen::MatrixXd() const;
 
     const DenseMatrix<T> operator-() const;
@@ -46,6 +53,17 @@ public:
 
     void zeros();
     void id();
+    void diag(T value);
+    void rand();
+    //upper tirangular matrix
+    void randLT();
+
+    void randDiag();
+
+    //rand sym,pos def
+    void randSPD(int notZeroPerLine);
+
+    char isSymmetric() const;
 
     Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau);
 };
@@ -358,8 +376,8 @@ linag::DenseMatrix<T>::DenseMatrix(linag::Size dimension):dimension(dimension){
 
 template <typename T>
 linag::DenseMatrix<T>::DenseMatrix(int rows,int cols){
-    dimension.rows=rows;
-    dimension.cols=cols;
+    dimension.rows = rows;
+    dimension.cols = cols;
     if(rows*cols > 0)
     {
         data = (T*) malloc(rows * cols * sizeof(T));
@@ -392,21 +410,22 @@ void linag::DenseMatrix<T>::id(){
 
 template <typename T>
 linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau){
-    assert(tau>0);
+    assert(tau>0 && dim().rows == b.length());
 
     linag::Vector<T> r1(dim().rows);
     linag::Vector<T> r2(dim().rows);
     linag::Vector<T> d(dim().rows);
-    linag::Vector<T> x{4,2,3,4};
+    linag::Vector<T> x(dim().rows);
+    linag::Vector<T> z(dim().rows);
+    x.rand();
     T alpha;
     T betta;
     unsigned long t = 0;
     r1 = b - (*this)*x;
-    //std::cout << x << std::endl<< (*this)*x << std::endl << b - (*this)*x<<std::endl;
     d = r1;
 
     do{
-        linag::Vector<T> z((*this)*d);
+        z = (*this)*d;
         alpha = (r1*r1)/(d*z);
         x = x + alpha*d;
         r2 = r1 - alpha*z;
@@ -418,6 +437,103 @@ linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T>
 
     return x;
 }
+
+template <typename T>
+char linag::DenseMatrix<T>::isSymmetric() const{
+    if(dim().cols == dim().rows)
+        return 1;
+    else
+        return 0;
+}
+
+template <>
+void linag::DenseMatrix<double >::rand(){
+    for (int i = 0; i < dim().rows; ++i) {
+        for (int j = 0; j < dim().cols; ++j) {
+            at(i,j) = (double)std::rand()/RAND_MAX;
+        }
+    }
+}
+
+template<>
+void linag::DenseMatrix<double>::randLT() {
+    for (int i = 0; i < dim().cols; ++i) {
+        for (int j = 0; j < i+1; ++j) {
+            at(i,j) = (double)std::rand()/RAND_MAX;
+        }
+        for (int j = i+1; j < dim().rows; ++j) {
+            at(i,j) = 0;
+        }
+    }
+}
+
+template <>
+void linag::DenseMatrix<double>::randDiag(){
+    int n = dim().cols<dim().rows?dim().cols:dim().rows;
+    for (int i = 0; i < n; ++i) {
+        at(i,i) = (double)std::rand()/RAND_MAX;
+    }
+}
+
+template <typename T>
+void linag::DenseMatrix<T>::diag(T value){
+    int n = dim().cols<dim().rows?dim().cols:dim().rows;
+    for (int i = 0; i < n; ++i) {
+        at(i,i) = value;
+    }
+}
+
+template<>
+void linag::DenseMatrix<double>::randSPD(int notZeroPerLine) {
+    assert(isSymmetric() && notZeroPerLine <= dim().cols);
+
+    randLT();
+
+    (*this) = (*this) * transpose();
+
+    int index;
+    for (int i = 0; i < dim().cols; ++i) {   //rows
+        int zerosInThisRow = 0;
+        for (int l = 0; l <i; ++l) {
+            if(std::fabs(at(i,l))<10e-12)
+                ++zerosInThisRow;
+        }
+        for (int k = 0; k < dim().cols - notZeroPerLine - zerosInThisRow; ++k) {
+            do{
+                index = (int)floor((i+1)+((double)std::rand()/RAND_MAX)*(dim().cols-(i+1)));
+            }while(std::abs(at(i,index))<10e-10);
+            at(i,index) = 0;
+            at(index,i) = 0;
+        }
+    }
+}
+
+//template <typename T>
+//linag::DenseMatrix<T>::DenseMatrix(const linag::SparseMatrix<T>& rhs):dimension(rhs.dim()){
+//    if(dim().rows*dim().cols > 0)
+//    {
+//        data = (T*) malloc(dim().rows * dim().cols * sizeof(T));
+//        assert(data != nullptr);
+//
+//        for (int i = 0; i < rows; ++i) {
+//            //calloc allocates the memory and sets all values to 0
+//            M.data[i] = (double*)calloc(cols, sizeof(double));
+//            for (int j = J.data[i]; j < J.data[i+1]-J.data[i]; ++j) {
+//                M.data[i][I.data[j]]=v.data[j];
+//            }
+//        }
+//
+//    }
+//    else
+//        data = (T*) nullptr;
+//}
+
+template <typename T>
+linag::DenseMatrix<T> &linag::DenseMatrix<T>::operator=(const linag::SparseMatrix<T> &rhs){
+    dimension = rhs.dim();
+}
+
+
 
 
 #endif //AUFGABE1_DENSEMATRIX_H
