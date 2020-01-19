@@ -338,6 +338,8 @@ date=short                % Datumsformat
 	
 	\lstinputlisting[language=C++, firstline = 486, lastline= 509, caption = Erstellen einer symmertrisch postiv definiten Zufallsmatrix mit einer fixen Anzahl an Einträgen ungleich $0$ pro Zeile in C++]{../code/Linag/densematrix.h} 
 	
+	
+	
 	\section{CG-Verfahren (Conjugate Gradients)}
 	
 	Bei großen dünn besetzten Matrizen ist eine direkte Methode wie z.B. die Cholesky-Zerlegung nicht effizient, deshalb bietet sich das CG-Verfahren an, wo vorausgesetzt wird, dass die Matrix positiv definit ist. Dieses ist äquivalent zur Minimierung der Energiefunktion $\phi(x) = \frac{1}{2}x^{T}Ax - x^{T}b$, also $grad\phi(x) = Ax - b = 0$, bei der Lösung handelt es sich um ein Minimum, da $A$ positiv definit ist. Beim Verfahren fängt man mit einem geschätzten Anfangsvektor $\hat{x}$ an. Man rechnet sich das Residuum $\hat{r} = A\hat{x} - b$ aus und nähert sich dann rekursiv zum eigentlich Vektor x an. Das Residuum ist monoton fallend und man kann das Verfahren abbrechen, wenn eine gewisse Toleranz $\tau > 0$ des Fehler erreicht worden ist, also wenn $\norm{\hat{r}} = \norm{A\hat{x} - b} < \tau$ gilt. Die Eindeutige Lösung bekommt man spätestens nach n Schritten, wobei n die Größe des Problems darstellt.
@@ -441,7 +443,7 @@ date=short                % Datumsformat
 	\appendix
 	\section{Verwendete Klassen}
 	\subsection{Vollbesetzte Matrix}
-	\lstinputlisting[language=c,  caption=densematrix.h]{../code/aufgabe1/densematrix.h}
+	\lstinputlisting[language=c,  caption=densematrix.h]{../code/Linag/densematrix.h}
 	
 	\newpage
 	\printbibliography

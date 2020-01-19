@@ -1,3 +1,0 @@
-C:/Users/rafae/OneDrive/Desktop/Uni/Numerik/Numerik2/code/cmake-build-debug/CMakeFiles/code.dir
-C:/Users/rafae/OneDrive/Desktop/Uni/Numerik/Numerik2/code/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/rafae/OneDrive/Desktop/Uni/Numerik/Numerik2/code/cmake-build-debug/CMakeFiles/rebuild_cache.dir
