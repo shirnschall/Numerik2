@@ -330,11 +330,13 @@ date=short                % Datumsformat
 	\newpage
 
 	\section{Einleitung}
-	Um das Gleichungssystem $Ax = b$ zu lösen, kann man verschiedene Wege nutzen. Einerseits durch Bildung von $A^{-1}$ mithilfe verschiedener Zerlegungen. Der Aufwand dieser Lösungsmöglichkeit wird am Anfang kurz untersucht. Andererseits können iterative Verfahren genutzt werden. In diesem Projekt wird genauer auf das CG-Verfahren (Conjugate Gradients) eingegangen. Dabei werden Aufwand und Konvergenzgeschwindigkeit untersucht, sowie eine mögliche Implementierung vorgestellt.  Weiteres sei Angemerkt, dass beim Implementieren die Eigen-und Time Bibliothek genutzt wurde.
+	Um das Gleichungssystem $Ax = b$ zu lösen, kann man verschiedene Wege nutzen. Einerseits durch Bildung von $A^{-1}$ mithilfe verschiedener Zerlegungen. Der Aufwand dieser Lösungsmöglichkeit wird am Anfang kurz untersucht. Andererseits können iterative Verfahren genutzt werden. In diesem Projekt wird genauer auf das CG-Verfahren (Conjugate Gradients) eingegangen. Dabei werden Aufwand und Konvergenzgeschwindigkeit untersucht, sowie eine mögliche Implementierung vorgestellt. 
 	\newpage
 	
 	\section{Aufwand einer symmetrisch positiv definiten Zufallsmatrix}
 	Beim lösen eines linearen Gleichungssystems der Form $Ax = b$ mit einer symmetrisch positiv definiten Zufallsmatrix $A\in\mathbb{R}^{n\times n}$ mit einer fixen Anzahl an Einträgen ungleich Null pro Zeile und $b \in \mathbb{R}^{n}$, z.B. mittels Cholesky-Zerlegung welches das schnellste Verfahren ist, treten $\frac{1}{3}n^{3} + \mathcal{O}(n^{2})$ arithmetische Operationen, also einen kubischen Aufwand. 
+	
+	\lstinputlisting[language=C++, firstline = 486, lastline= 509, caption = Erstellen einer symmertrisch postiv definiten Zufallsmatrix mit einer fixen Anzahl an Einträgen ungleich $0$ pro Zeile in C++]{../code/Linag/densematrix.h} 
 	
 	\section{CG-Verfahren (Conjugate Gradients)}
 	
@@ -359,6 +361,12 @@ date=short                % Datumsformat
 		\caption{CG-Verfahren} \label{alg:cg}
 	\end{algorithm}
 	
+	\lstinputlisting[language=C++, firstline = 411, lastline= 439, caption = Implementierung des CG-Verfahrens in C++]{../code/Linag/densematrix.h} 
+	
+	\begin{bemerkung}
+		Die Implementierung aller Klassen und Funktionen im $linag$-namespace sind im Anhang zu finden. Zum Vergleich wurde die Eigen-Bibliothek verwendet. 
+	\end{bemerkung}
+		
 	Nun stellt sich die Frage, ob \cref{alg:cg} äquivalent zum Algorithmus 8.10 \autocite[101]{skript} ist und welches bevorzugt wird.\\
 	\cref{alg:cg} beinhaltet lauter Vektor-Vektor Multiplikationen und zwei Matrix-Vektor Multiplikation, es ist klar, dass die Matrix-Vektor Multiplikation aufwendiger ist als die Vektor-Vektor Multiplikation. Im Algorithmus wird die selbe Matrix-Vektor Multiplikation durchgeführt, d.h. man braucht sich nur einmal das Ergebnis auszurechnen und abzuspeichern. Beim Algorithmus 8.10 gibt es wieder zwei Matrix-Vektor Multiplikationen die die Vektor-Vektor Multiplikationen dominieren. In diesen Algorithmus müssen jedoch zwei unterschiedliche Rechnungen durchgeführt werden, und damit ist \cref{alg:cg} effizienter. Man muss nur noch zeigen, dass die beiden Algorithmen dasselbe Ergebnis liefern.\\
 	
@@ -368,17 +376,17 @@ date=short                % Datumsformat
 		\norm{x^{(t)} - A^{-1}b}_A \leq 2\left(\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1}\right)^{t}\norm{x^{(0)} - A^{-1}b}_A, \quad t\in\mathbb{N}
 	\end{align*}
 	
-	mit der spektralen Konditionszahl der Matrix $\kappa(A) := \left|\frac{\lambda_{max}(A)}{\lambda_{min}(A)}\right|$ und der Energienorm $\norm{x}_A := \sqrt{(x,x)_A}$. Das Verfahren konvergiert für $\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1} < 1$, was offensichtlich gegeben ist, da $\kappa \geq 1$. Die Konvergenzgeschwindigkeit ist größer, wenn der Bruch minimal ist, also genau dann wenn die Eigenwerte der Matrix eng zusammenliegen. Wenn alle Eigenwerte gleich sind, dann gilt $\kappa = 1$ also $\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1} = 0$. Nun wird gezeigt wie der Fehler abhängig von $\kappa$ und die Anzahl der Iterationsschritte t gegen 0 konvergiert.
+	mit der spektralen Konditionszahl der Matrix $\kappa(A) := \left|\frac{\lambda_{max}(A)}{\lambda_{min}(A)}\right|$ und der Energienorm $\norm{x}_A := \sqrt{(x,x)_A}$. Das Verfahren konvergiert für $\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1} < 1$, was offensichtlich gegeben ist, da $\kappa \geq 1$. Die Konvergenzgeschwindigkeit ist größer, wenn der Bruch minimal ist, also genau dann wenn die Eigenwerte der Matrix eng zusammenliegen. Wenn alle Eigenwerte gleich sind, dann gilt $\kappa = 1$ also $\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1} = 0$. Nun wird gezeigt wie der Fehler abhängig von $\kappa$ und die Anzahl der Iterationsschritte t gegen 0 konvergiert, also vom Bruch $\left(\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1}\right)^{t} =: \omega^{t}$.
 	
 	\begin{figure}[H]
 		\begin{center}
-			\includegraphics[width=0.8\textwidth]{../plots/fehler cg.png}
+			\includegraphics[width=0.8\textwidth]{../plots/fehler cgloglog.png}
 		\end{center}
 		\caption{Fehlerkonvergenz abhängig von $\kappa$ und t gegen 0}
 		\label{fig:fehlercg}	
 	\end{figure}
 
-	Man sieht auf \cref{fig:fehlercg} dass die Konvergenz des CG-Verfahren schneller gegen ist, genau dann wenn die Eigenwerte eng zusammenliegen, also wenn $\kappa$ annähernd 1 ist. Der Bruch auf der y-Achse ist natürlich $\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1}$.
+	Man sieht auf \cref{fig:fehlercg} dass die Konvergenz des CG-Verfahrens schneller gegen 0 ist, genau dann wenn die Eigenwerte eng zusammenliegen, also wenn $\kappa$ annähernd 1 ist.
 	
 	\newpage
 	
@@ -396,7 +404,7 @@ date=short                % Datumsformat
 	
 	Eine Möglichkeit das Format zu implementieren ist wie folgt:
 	
-	hier code
+
 	
 	Die spektrale Konditionszahl definiert die Konvergenzgeschwindigkeit des CG-Verfahrens. Durch lösen des vorkonditionierten Systems
 	\begin{align*}
