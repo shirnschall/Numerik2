@@ -50,5 +50,5 @@
 #R
 
 #cmake
-code/cmake*
-code/.idea
+$GIT_DIR/code/cmake*
+$GIT_DIR/code/.idea
