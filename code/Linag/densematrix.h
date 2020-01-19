@@ -6,8 +6,8 @@
 #define AUFGABE1_DENSEMATRIX_H
 
 //eigen lib
-#include </usr/local/include/eigen3/Eigen/Dense>
-#include </usr/local/include/eigen3/Eigen/Eigenvalues>
+#include "Eigen/Dense"
+#include "Eigen/Eigenvalues"
 #include <iostream>
 #include <string.h>
 #include "size.h"
@@ -440,10 +440,7 @@ linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T>
 
 template <typename T>
 char linag::DenseMatrix<T>::isSymmetric() const{
-    if(dim().cols == dim().rows)
-        return 1;
-    else
-        return 0;
+    return dim().cols == dim().rows?1:0;
 }
 
 template <>

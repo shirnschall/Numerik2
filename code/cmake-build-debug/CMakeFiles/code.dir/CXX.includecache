@@ -19,10 +19,18 @@ size.h
 /Users/shirnschall/Desktop/Numerik2/code/Linag/size.h
 vector.h
 /Users/shirnschall/Desktop/Numerik2/code/Linag/vector.h
+sparsematrix.h
+/Users/shirnschall/Desktop/Numerik2/code/Linag/sparsematrix.h
 
 /Users/shirnschall/Desktop/Numerik2/code/Linag/size.h
 
 /Users/shirnschall/Desktop/Numerik2/code/Linag/sparsematrix.h
+vector.h
+/Users/shirnschall/Desktop/Numerik2/code/Linag/vector.h
+cmath
+/Users/shirnschall/Desktop/Numerik2/code/Linag/cmath
+iostream
+/Users/shirnschall/Desktop/Numerik2/code/Linag/iostream
 
 /Users/shirnschall/Desktop/Numerik2/code/Linag/vector.h
 iostream
@@ -31,7 +39,7 @@ stdlib.h
 -
 time.h
 -
-math.h
+cmath
 -
 size.h
 /Users/shirnschall/Desktop/Numerik2/code/Linag/size.h
@@ -39,12 +47,12 @@ size.h
 /Users/shirnschall/Desktop/Numerik2/code/main.cpp
 iostream
 -
+Linag/sparsematrix.h
+/Users/shirnschall/Desktop/Numerik2/code/Linag/sparsematrix.h
 Linag/densematrix.h
 /Users/shirnschall/Desktop/Numerik2/code/Linag/densematrix.h
 Linag/vector.h
 /Users/shirnschall/Desktop/Numerik2/code/Linag/vector.h
-Linag/sparsematrix.h
-/Users/shirnschall/Desktop/Numerik2/code/Linag/sparsematrix.h
 
 /usr/local/include/eigen3/Eigen/Cholesky
 Core
