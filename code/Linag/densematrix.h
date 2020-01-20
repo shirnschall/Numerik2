@@ -7,22 +7,26 @@
 
 //eigen lib
 #include "Eigen/Dense"
-#include "Eigen/Eigenvalues"
 #include <iostream>
 #include <cstring>
 #include "size.h"
-#include "vector.h"
-#include "sparsematrix.h"
+#include <thread>
+
+#define THREAD_COUNT 40
+
 
 namespace linag {
+    template <typename T> class SparseMatrix;
+    template <typename T> class Vector;
+
 template<typename T>
 class DenseMatrix{
 private:
     Size dimension;
     T* data;
 public:
-    DenseMatrix(int rows,int cols);
-    DenseMatrix(linag::Size dimension);
+    DenseMatrix(int rows = 0,int cols = 0);
+    explicit DenseMatrix(linag::Size dimension);
     ~DenseMatrix();
 
     DenseMatrix(std::initializer_list<std::initializer_list<T>> init);
@@ -32,12 +36,12 @@ public:
     DenseMatrix<T> &operator=(const DenseMatrix<T> &rhs);
 
 
-    DenseMatrix(const SparseMatrix<T>& rhs);
+    explicit DenseMatrix(const SparseMatrix<T>& rhs);
     DenseMatrix<T> &operator=(const SparseMatrix<T> &rhs);
 
 
 
-    operator Eigen::MatrixXd() const;
+    explicit operator Eigen::MatrixXd() const;
 
     const DenseMatrix<T> operator-() const;
 
@@ -74,6 +78,11 @@ template<typename T>
 const DenseMatrix<T> operator-(const DenseMatrix<T>& x,const DenseMatrix<T>& y);
 template<typename T>
 const DenseMatrix<T> operator*(const DenseMatrix<T>& x,const DenseMatrix<T>& y);
+template <typename T>
+void mult(linag::DenseMatrix<T>& res,const DenseMatrix<T>& x,const DenseMatrix<T>& y,int idThread,int numThreads);
+
+
+
 template<typename T>
 const DenseMatrix<T> operator*(const DenseMatrix<T>& x,const T y);
 template<typename T>
@@ -126,18 +135,16 @@ std::ostream& operator<<(std::ostream& output,const DenseMatrix<T>& x);
         (*this) = (*this) * transpose();
 
         int index;
-        for (int i = 0; i < dim().cols; ++i) {   //rows
-            int zerosInThisRow = 0;
-            for (int l = 0; l <i; ++l) {
-                if(std::fabs(at(i,l))<10e-12)
-                    ++zerosInThisRow;
-            }
-            for (int k = 0; k < dim().cols - notZeroPerLine - zerosInThisRow; ++k) {
+        linag::Vector<int> zerosInThisRow(dim().rows);
+        zerosInThisRow.zeros();
+        for (int i = 0; i < dim().rows; ++i) {   //rows
+            for (int k = 0; k < dim().cols - notZeroPerLine - zerosInThisRow.at(i); ++k) {
                 do{
                     index = (int)floor((i+1)+((double)std::rand()/RAND_MAX)*(dim().cols-(i+1)));
                 }while(std::abs(at(i,index))<10e-10);
                 at(i,index) = 0;
                 at(index,i) = 0;
+                ++zerosInThisRow.at(index);
             }
         }
     }
@@ -209,15 +216,34 @@ const linag::DenseMatrix<T> linag::operator*(const linag::DenseMatrix<T>& x,cons
 
     linag::DenseMatrix<T> res(x.dim().rows,y.dim().cols);
 
-    for (int i = 0; i < res.dim().rows; ++i) {
-        for (int j = 0; j < res.dim().cols; ++j) {
-            res.at(i,j)=0;
+    //multithreading
+    linag::Vector<std::thread*> threads(THREAD_COUNT>res.dim().cols?res.dim().cols:THREAD_COUNT);
+    for (int l = 0; l < threads.length(); ++l) {
+        //create threads
+        threads.at(l) = new std::thread(linag::mult<T>,std::ref(res),std::ref(x),std::ref(y),l,threads.length());
+    }
+    for (int l = 0; l < threads.length(); ++l) {
+        threads.at(l)->join();
+    }
+    //std::thread test(std::thread(linag::mult<T>,std::ref(res),std::ref(x),std::ref(y),0,1));
+    //test.join();
+    for (int l = 0; l < threads.length(); ++l) {
+        delete threads.at(l);
+    }
+
+    return res;
+}
+
+template <typename T>
+void linag::mult(linag::DenseMatrix<T>& res,const linag::DenseMatrix<T>& x,const linag::DenseMatrix<T>& y,int idThread,int numThreads){
+    for (int i = idThread; i < res.dim().cols; i+=numThreads) {
+        for (int j = 0; j < x.dim().rows; ++j) {
+            res.at(j,i)=0;
             for (int k = 0; k < x.dim().cols; ++k) {
-                res.at(i,j) += x.at(i,k) * y.at(k,j);
+                res.at(j,i) += x.at(j,k) * y.at(k,i);
             }
         }
     }
-    return res;
 }
 
 
@@ -358,8 +384,14 @@ linag::DenseMatrix<T> & linag::DenseMatrix<T>::operator=(const linag::DenseMatri
             dimension = rhs.dim();
             if(dim().rows*dim().cols > 0)
             {
-                free(data);
-                data = (T*) realloc (data, rhs.dim().rows * rhs.dim().cols * sizeof(T));
+                if(!data)
+                {
+                    data = (T*) malloc (rhs.dim().rows * rhs.dim().cols * sizeof(T));
+                    assert(data != nullptr);
+                }else {
+                    data = (T *) realloc(data, rhs.dim().rows * rhs.dim().cols * sizeof(T));
+                    assert(data != nullptr);
+                }
             }
             else
                 data = (T*) nullptr;
@@ -371,12 +403,11 @@ linag::DenseMatrix<T> & linag::DenseMatrix<T>::operator=(const linag::DenseMatri
 }
 
 template <typename T>
-linag::DenseMatrix<T>::DenseMatrix(const DenseMatrix<T> &rhs){
-    dimension = rhs.dim();
+linag::DenseMatrix<T>::DenseMatrix(const DenseMatrix<T> &rhs):dimension(rhs.dim()){
     if(dimension.rows*dimension.cols > 0)
-    {
-        data = (T*) malloc(rhs.dim().rows * rhs.dim().cols * sizeof(T));
-        assert(data != nullptr);
+        {
+            data = (T*) malloc(rhs.dim().rows * rhs.dim().cols * sizeof(T));
+            assert(data != nullptr);
         //memcpy is a "dumb" function that only copies bytes
         std::memcpy(data,rhs.data,rhs.dim().rows * rhs.dim().cols * sizeof(T));
     }
@@ -507,29 +538,47 @@ void linag::DenseMatrix<T>::diag(T value){
 }
 
 
-//template <typename T>
-//linag::DenseMatrix<T>::DenseMatrix(const linag::SparseMatrix<T>& rhs):dimension(rhs.dim()){
-//    if(dim().rows*dim().cols > 0)
-//    {
-//        data = (T*) malloc(dim().rows * dim().cols * sizeof(T));
-//        assert(data != nullptr);
-//
-//        for (int i = 0; i < rows; ++i) {
-//            //calloc allocates the memory and sets all values to 0
-//            M.data[i] = (double*)calloc(cols, sizeof(double));
-//            for (int j = J.data[i]; j < J.data[i+1]-J.data[i]; ++j) {
-//                M.data[i][I.data[j]]=v.data[j];
-//            }
-//        }
-//
-//    }
-//    else
-//        data = (T*) nullptr;
-//}
+template <typename T>
+linag::DenseMatrix<T>::DenseMatrix(const linag::SparseMatrix<T>& rhs):dimension(rhs.dim()){
+    if(dim().rows*dim().cols > 0)
+   {
+        data = (T*) malloc(dim().rows * dim().cols * sizeof(T));
+        assert(data != nullptr);
+
+        zeros();
+        for (int i = 0; i < dim().rows; ++i) {
+            for (int j = rhs.getI().at(i); j < rhs.getI().at(i+1); ++j) {
+                at(i,rhs.getJ().at(j))=rhs.getV().at(j);
+            }
+        }
+
+    }
+    else
+        data = (T*) nullptr;
+}
 
 template <typename T>
 linag::DenseMatrix<T> &linag::DenseMatrix<T>::operator=(const linag::SparseMatrix<T> &rhs){
-    dimension = rhs.dim();
+            dimension = rhs.dim();
+            if (rhs.dim().rows * rhs.dim().cols > 0) {
+                if (!data) {
+                    data = (T *) malloc(rhs.dim().rows * rhs.dim().cols * sizeof(T));
+                    assert(data != nullptr);
+                } else {
+                    data = (T *) realloc(data, rhs.dim().rows * rhs.dim().cols * sizeof(T));
+                    assert(data != nullptr);
+                }
+            }else
+            data = (T *) nullptr;
+
+
+        zeros();
+        for (int i = 0; i < dim().rows; ++i) {
+            for (int j = rhs.getI().at(i); j < rhs.getI().at(i + 1); ++j) {
+                at(i, rhs.getJ().at(j)) = rhs.getV().at(j);
+            }
+        }
+    return *this;
 }
 
 

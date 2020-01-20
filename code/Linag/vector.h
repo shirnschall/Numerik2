@@ -132,6 +132,19 @@ const linag::Vector<T> linag::operator+(const linag::Vector<T>& x,const linag::V
 
 
 template <typename T>
+void linag::Vector<T>::zeros(){
+    for (int i = 0; i < length(); ++i) {
+        at(i) = 0;
+    }
+}
+template <typename T>
+void linag::Vector<T>::ones(){
+    for (int i = 0; i < length(); ++i) {
+        at(i) = 1;
+    }
+}
+
+template <typename T>
 void linag::Vector<T>::rand(){
     for (int i = 0; i < dim().rows*dim().cols; ++i) {
         at(i) = (T)std::rand()/RAND_MAX;
@@ -228,8 +241,14 @@ linag::Vector<T> &linag::Vector<T>::operator=(const linag::Vector<T> &rhs){
             dimension = rhs.dim();
             if(dim().rows*dim().cols > 0)
             {
-                free(data);
-                data = (T*) realloc (data, rhs.dim().rows * rhs.dim().cols * sizeof(T));
+                if(data == nullptr){
+                    data = (T *) malloc(rhs.dim().rows * rhs.dim().cols * sizeof(T));
+                    assert(data != nullptr);
+                }
+                else {
+                    data = (T *) realloc(data, rhs.dim().rows * rhs.dim().cols * sizeof(T));
+                    assert(data != nullptr);
+                }
             }
             else
                 data = (T*) nullptr;
