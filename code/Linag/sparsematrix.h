@@ -9,6 +9,9 @@
 #include "iostream"
 #include "vector.h"
 
+#define THREAD_COUNT 8
+
+
 namespace linag {
     //say class exists without defining it
     template <typename T> class DenseMatrix;
@@ -55,9 +58,9 @@ namespace linag {
     const Vector<T> operator*(const Vector<T>& x,const SparseMatrix<T>& y);
     template<typename T>
     const Vector<T> operator*(const SparseMatrix<T>& x,const Vector<T>& y);
+    //template <typename T>
+    //void mult(linag::Vector<T> &res, const linag::SparseMatrix<T>& x,const linag::Vector<T>& y,int idThread,int numThreads);
 
-    template<typename T>
-    std::ostream& operator<<(std::ostream& output,const SparseMatrix<T>& x);
 }
 
 template<typename T>
@@ -92,6 +95,11 @@ const linag::Vector<T> linag::operator*(const linag::SparseMatrix<T>& x,const li
 
     return res;
 }
+
+//template <typename T>
+//void linag::mult(linag::Vector<T> &res, const linag::SparseMatrix<T>& x,const linag::Vector<T>& y,int idThread,int numThreads){
+
+//}
 
 template <typename T>
 linag::Vector<T> linag::SparseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau){

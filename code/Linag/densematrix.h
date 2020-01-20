@@ -12,7 +12,7 @@
 #include "size.h"
 #include <thread>
 
-#define THREAD_COUNT 40
+#define THREAD_COUNT 8
 
 
 namespace linag {
@@ -134,17 +134,12 @@ std::ostream& operator<<(std::ostream& output,const DenseMatrix<T>& x);
 
         (*this) = (*this) * transpose();
 
-        int index;
-        linag::Vector<int> zerosInThisRow(dim().rows);
-        zerosInThisRow.zeros();
-        for (int i = 0; i < dim().rows; ++i) {   //rows
-            for (int k = 0; k < dim().cols - notZeroPerLine - zerosInThisRow.at(i); ++k) {
-                do{
-                    index = (int)floor((i+1)+((double)std::rand()/RAND_MAX)*(dim().cols-(i+1)));
-                }while(std::abs(at(i,index))<10e-10);
-                at(i,index) = 0;
-                at(index,i) = 0;
-                ++zerosInThisRow.at(index);
+        for (int i = 0; i < dim().rows; ++i) {
+            for (int j = i+std::floor((double)notZeroPerLine/2); j < dim().cols; ++j) {
+                at(i,j) = 0;
+            }
+            for (int j = 0; j < i-std::ceil((double)notZeroPerLine/2); ++j) {
+                at(i,j) = 0;
             }
         }
     }
