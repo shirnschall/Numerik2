@@ -168,20 +168,18 @@ linag::SparseMatrix<T> &linag::SparseMatrix<T>::operator=(const linag::SparseMat
 }
 
 template <typename T>
-linag::SparseMatrix<T>::SparseMatrix(const linag::DenseMatrix<T>& rhs):I(0),J(0),v(0){
+linag::SparseMatrix<T>::SparseMatrix(const linag::DenseMatrix<T>& rhs):
+I(0),J(0),v(0),dimension(rhs.dim()){
     //calculate array size
-    int vc=0;
-    int Ic =rhs.dim().rows+1;
+    int vc = 0;
+    int Ic = rhs.dim().rows+1;
     for (int i = 0; i < rhs.dim().rows; ++i) {//rows
         for (int j = 0; j < rhs.dim().cols; ++j) {//cols
-            if(rhs.at(i,j) > 10e-10 || rhs.at(i,j) < -10e-10){
+            if(std::fabs(rhs.at(i,j)) > 10e-10){
                 ++vc;
             }
         }
     }
-    //rows/cols
-    dimension.rows=rhs.dim().rows;
-    dimension.cols=rhs.dim().cols;
     //set array size
     I = linag::Vector<int>(Ic);
     J = linag::Vector<int>(vc);
@@ -212,7 +210,7 @@ linag::SparseMatrix<T> & linag::SparseMatrix<T>::operator=(const linag::DenseMat
     int Ic =rhs.dim().rows+1;
     for (int i = 0; i < rhs.dim().rows; ++i) {//rows
         for (int j = 0; j < rhs.dim().cols; ++j) {//cols
-            if(rhs.at(i,j) > 10e-10 || rhs.at(i,j) < -10e-10){
+            if(std::fabs(rhs.at(i,j)) > 10e-10){
                 ++vc;
             }
         }

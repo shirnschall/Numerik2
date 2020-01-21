@@ -8,7 +8,7 @@ p <- ggplot(data,aes(x=n,y=t,color=type,group=type))+
   geom_point(aes(shape = type)) + 
   geom_path(aes(group = type))+
   theme_bw() +
-  labs(color = "Typ",group="Typ",linetype="Typ",shape="Typ")+
+  labs(color = "Art der Matrix",group="Art der Matrix",linetype="Art der Matrix",shape="Art der Matrix")+
   theme(
     legend.position = c(.03, .97),
     legend.justification = c("left", "top"),
@@ -17,7 +17,8 @@ p <- ggplot(data,aes(x=n,y=t,color=type,group=type))+
   )+
 scale_y_log10()+
   ylab("Zeit [us]") +
-  xlab("Matrix (nxn)")
+  xlab("Matrix (nxn)")+
+  scale_fill_discrete(labels = c("A", "B"))
 
 p
 

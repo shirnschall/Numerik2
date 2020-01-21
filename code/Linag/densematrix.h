@@ -546,7 +546,6 @@ linag::DenseMatrix<T>::DenseMatrix(const linag::SparseMatrix<T>& rhs):dimension(
                 at(i,rhs.getJ().at(j))=rhs.getV().at(j);
             }
         }
-
     }
     else
         data = (T*) nullptr;
