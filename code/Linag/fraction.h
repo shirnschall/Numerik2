@@ -1,7 +1,3 @@
-//
-// Created by Sebastian Hirnschall on 19.01.20.
-//
-
 #ifndef CODE_FRACTION_H
 #define CODE_FRACTION_H
 

@@ -1,7 +1,3 @@
-//
-// Created by Sebastian Hirnschall on 18.01.20.
-//
-
 #ifndef AUFGABE1_SIZE_H
 #define AUFGABE1_SIZE_H
 

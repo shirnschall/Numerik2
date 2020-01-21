@@ -1,7 +1,3 @@
-//
-// Created by Sebastian Hirnschall on 17.01.20.
-//
-
 #ifndef AUFGABE1_DENSEMATRIX_H
 #define AUFGABE1_DENSEMATRIX_H
 
@@ -11,7 +7,6 @@
 #include <cstring>
 #include "size.h"
 #include <thread>
-
 #define THREAD_COUNT 8
 
 
