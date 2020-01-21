@@ -382,7 +382,7 @@ date=short                % Datumsformat
 	
 	\begin{figure}[H]
 		\begin{center}
-			\includegraphics[width=0.8\textwidth]{../plots/fehler cgloglog.png}
+			\includegraphics[width=0.8\textwidth]{../plots/fehler-cgloglog.png}
 		\end{center}
 		\caption{Fehlerkonvergenz abhängig von $\kappa$ und t gegen 0}
 		\label{fig:fehlercg}	
@@ -406,6 +406,14 @@ date=short                % Datumsformat
 	
 	Eine Möglichkeit das Format zu implementieren ist wie folgt:
 	
+	
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{../plots/cg-dense-vs-sparse.png}
+		\end{center}
+		\caption{Ben\"otigte Zeit in $\mu s$ f\"ur verschiedene d\"unn- und vollbesetzte $n\times n$-Matrizen}
+		\label{fig:zeitcg}	
+	\end{figure}
 
 	
 	Die spektrale Konditionszahl definiert die Konvergenzgeschwindigkeit des CG-Verfahrens. Durch lösen des vorkonditionierten Systems
