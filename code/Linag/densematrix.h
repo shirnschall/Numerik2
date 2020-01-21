@@ -79,7 +79,7 @@ const DenseMatrix<T> operator-(const DenseMatrix<T>& x,const DenseMatrix<T>& y);
 template<typename T>
 const DenseMatrix<T> operator*(const DenseMatrix<T>& x,const DenseMatrix<T>& y);
 template <typename T>
-void mult(linag::DenseMatrix<T>& res,const DenseMatrix<T>& x,const DenseMatrix<T>& y,int idThread,int numThreads);
+void mult_DenseMatrix_DenseMatrix(linag::DenseMatrix<T>& res,const DenseMatrix<T>& x,const DenseMatrix<T>& y,int idThread,int numThreads);
 
 
 
@@ -128,17 +128,17 @@ std::ostream& operator<<(std::ostream& output,const DenseMatrix<T>& x);
 
     template<>
     void linag::DenseMatrix<double>::randSPD(int notZeroPerLine) {
-        assert(isSymmetric() && notZeroPerLine <= dim().cols);
+        assert(isSymmetric() && notZeroPerLine <= dim().cols && notZeroPerLine%2);
 
         randLT();
 
         (*this) = (*this) * transpose();
 
         for (int i = 0; i < dim().rows; ++i) {
-            for (int j = i+std::floor((double)notZeroPerLine/2); j < dim().cols; ++j) {
+            for (int j = i+std::ceil((double)notZeroPerLine/2); j < dim().cols; ++j) {
                 at(i,j) = 0;
             }
-            for (int j = 0; j < i-std::ceil((double)notZeroPerLine/2); ++j) {
+            for (int j = 0; j <= i-std::ceil((double)notZeroPerLine/2); ++j) {
                 at(i,j) = 0;
             }
         }
@@ -215,7 +215,7 @@ const linag::DenseMatrix<T> linag::operator*(const linag::DenseMatrix<T>& x,cons
     linag::Vector<std::thread*> threads(THREAD_COUNT>res.dim().cols?res.dim().cols:THREAD_COUNT);
     for (int l = 0; l < threads.length(); ++l) {
         //create threads
-        threads.at(l) = new std::thread(linag::mult<T>,std::ref(res),std::ref(x),std::ref(y),l,threads.length());
+        threads.at(l) = new std::thread(linag::mult_DenseMatrix_DenseMatrix<T>,std::ref(res),std::ref(x),std::ref(y),l,threads.length());
     }
     for (int l = 0; l < threads.length(); ++l) {
         threads.at(l)->join();
@@ -230,7 +230,7 @@ const linag::DenseMatrix<T> linag::operator*(const linag::DenseMatrix<T>& x,cons
 }
 
 template <typename T>
-void linag::mult(linag::DenseMatrix<T>& res,const linag::DenseMatrix<T>& x,const linag::DenseMatrix<T>& y,int idThread,int numThreads){
+void linag::mult_DenseMatrix_DenseMatrix(linag::DenseMatrix<T>& res,const linag::DenseMatrix<T>& x,const linag::DenseMatrix<T>& y,int idThread,int numThreads){
     for (int i = idThread; i < res.dim().cols; i+=numThreads) {
         for (int j = 0; j < x.dim().rows; ++j) {
             res.at(j,i)=0;
