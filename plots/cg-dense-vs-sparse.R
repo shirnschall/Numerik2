@@ -6,18 +6,19 @@ data=read.csv("/Users/shirnschall/Desktop/Numerik2/plots/cg-dense-vs-sparse",hea
 
 p <- ggplot(data,aes(x=n,y=t,color=type,group=type))+
   geom_point(aes(shape = type)) + 
-  geom_path(aes(group = type))+
+  #geom_path(aes(group = type))+
+  geom_smooth()+ # argument se=F schaltet konvidenzintervall aus
   theme_bw() +
   labs(color = "Art der Matrix",group="Art der Matrix",linetype="Art der Matrix",shape="Art der Matrix")+
   theme(
-    legend.position = c(.03, .97),
-    legend.justification = c("left", "top"),
+    legend.position = c(.97, .03),
+    legend.justification = c("right", "bottom"),
     legend.box.just = "right",
     legend.margin = margin(6, 6, 6, 6)
   )+
 scale_y_log10()+
-  ylab("Zeit [us]") +
-  xlab("Matrix (nxn)")+
+  ylab("Zeit [\u03bcs]") +
+  xlab("Matrix (n\u00d7n)")+
   scale_fill_discrete(labels = c("A", "B"))
 
 p

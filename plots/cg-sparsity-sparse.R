@@ -6,6 +6,9 @@ require(dplyr)
 data=read.csv("/Users/shirnschall/Desktop/Numerik2/plots/cg-sparsity-sparse",header = TRUE ,sep = "\t")
 #data=read.csv("C:\\Users\\shirnschall\\Documents\\GitHub\\Numerik2\\plots\\cg-sparsity-sparse",header = TRUE ,sep = "\t")
 
+data=data[!(data$density==7),]
+data=data[!(data$density==5),]
+
 p <- ggplot(data,aes(x=n,y=t,color=factor(density),group=factor(density)))+
   geom_point(aes(shape = factor(density))) + 
   #geom_path(aes(group = factor(density)))+

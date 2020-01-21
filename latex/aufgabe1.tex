@@ -421,6 +421,17 @@ date=short                % Datumsformat
 		\label{fig:zeitcg}	
 	\end{figure}
 
+	In \cref{fig:zeitcg} ist zu sehen, dass das CG-Verfahren f\"ur d\"unn besetzte Matrizen im \textit{compressed sparse row}-Format wesentlich effizienter berechnet werden kann, als f\"ur vollbesetzte Matrizen bzw. als solche gespeicherten Matrizen.
+	Wie in Zeile 5 in \cref{alg:cg} zu sehen ist, ist der unterschiedliche Aufwand von einer Matrix-Vektor-Multiplikation abh\"angig. Der Aufwand um eine vollbesetzte $n\times n$-Matrix mit einem Vektor zu multiplizieren entspricht $\mathcal{O}(n^2)$. Der Aufwand um eine d\"unnbesetzte Matrix mit einem Vektor zu multiplizieren ist davon abh\"angig wie dicht die Matrix besetzt ist. In \cref{fig:zeitcg-sparse} ist zu sehen, wie sich die ben\"otigte Zeit zur durchf\"uhrung des CG-Verfahrens mit der Anzahl an Eintr\"agen ungleich null pro Zeile der Matrix \"andert.
+	
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{../plots/cg-sparsity-sparse.png}
+		\end{center}
+		\caption{Ben\"otigte Zeit in $\mu s$ f\"ur verschieden dicht besetzte $n\times n$-Matrizen im \textit{compressed sparse row}-Format}
+		\label{fig:zeitcg-sparse}	
+	\end{figure}
+	
 	
 	Die spektrale Konditionszahl definiert die Konvergenzgeschwindigkeit des CG-Verfahrens. Durch lösen des vorkonditionierten Systems
 	\begin{align*}
@@ -457,16 +468,17 @@ date=short                % Datumsformat
 	\appendix
 	\section{Verwendete Klassen}
 	\subsection{Size}
-	\lstinputlisting[language=c,  caption=densematrix.h]{../code/Linag/size.h}
+	\lstinputlisting[language=c,  caption=size.h]{../code/Linag/size.h}
 	\subsection{Vektor}
-	\lstinputlisting[language=c,  caption=densematrix.h]{../code/Linag/vector.h}
+	\lstinputlisting[language=c,  caption=vector.h]{../code/Linag/vector.h}
 	\subsection{Vollbesetzte Matrix}
 	\lstinputlisting[language=c,  caption=densematrix.h]{../code/Linag/densematrix.h}
 	\subsection{D\"unnbesetzte Matrix}
-	\lstinputlisting[language=c,  caption=densematrix.h]{../code/Linag/sparsematrix.h}
+	\lstinputlisting[language=c,  caption=sparsematrix.h]{../code/Linag/sparsematrix.h}
 	
 	\newpage
 	\printbibliography
+	\lstlistoflistings
 	\listoffigures
 	\thispagestyle{firststyle}
 	
