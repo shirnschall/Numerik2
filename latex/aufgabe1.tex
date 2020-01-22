@@ -447,7 +447,7 @@ date=short                % Datumsformat
 		\begin{algorithmic}[1]
 			\State $r_0 = b - Ax_0$
 			\State $z_0 = P^{-1}r_0$
-			\State $d_0 = r_0$
+			\State $d_0 = z_0$
 			\State $t = 0$
 			\While{$ \norm{r_t} > \tau $}
 			\State $\alpha_t = \frac{r_t^{T}z_t}{d_t^{T}Ad_t}$
@@ -455,7 +455,7 @@ date=short                % Datumsformat
 			\State $r_{t+1} = r_t - \alpha_t Ad_t$
 			\State $z_{t+1} = P^{-1}r_{t+1}$
 			\State $\beta_t = \frac{z_{t+1}^{T}r_{t+1}}{z_tr_t}$
-			\State $d_{t+1} = r_{t+1} + \beta_td_t$
+			\State $d_{t+1} = z_{t+1} + \beta_td_t$
 			\State $t = t + 1$
 			\EndWhile
 		\end{algorithmic}
