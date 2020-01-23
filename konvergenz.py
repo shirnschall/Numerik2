@@ -25,7 +25,7 @@ ax.loglog(t,f(100,t), '-.', label='$\kappa = 100$')
 #ax.loglog(t,f(50,t), ':', label='$\kappa = 50$')
 
 ax.grid(which='major', linewidth=0.5)
-ax.set_xlabel('$\kappa$', size='large')
+ax.set_xlabel('$t$', size='large')
 ax.set_ylabel('$\omega^t$', size='large')
 plt.title(r'$\omega^{t} := \left(\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1}\right)^{t}$',fontsize='large')
 ax.legend()
