@@ -1,4 +1,5 @@
 library(ggplot2)
+library(ggpmisc)
 require(scales)
 require(dplyr)
 
@@ -8,23 +9,66 @@ data=read.csv("/Users/shirnschall/Desktop/Numerik2/plots/cg-sparsity-sparse",hea
 
 data=data[!(data$density==7),]
 data=data[!(data$density==5),]
+data=data[!(data$n==1000),]
+#data=data[!(data$density=='n'),]
 
-p <- ggplot(data,aes(x=n,y=t,color=factor(density),group=factor(density)))+
-  geom_point(aes(shape = factor(density))) + 
+
+#vergleichsfunktionen
+lm_eqn = function(df){
+  m = lm(t~poly(n,2,raw=TRUE),df);
+  eq <- substitute(italic(y) == a + b %.% italic(x)*","~~italic(r)^2~"="~r2, 
+                   list(a = format(unname(coef(m)[1]), digits = 2),
+                        b = format(unname(coef(m)[2]), digits = 2),
+                        r2 = format(summary(m)$r.squared, digits = 3)))
+  as.character(as.expression(eq));
+}
+
+
+n <- seq(from=0.1,to=1250,by=0.1)
+f <- function(a){
+  a*a*100
+}
+g <- function(a){
+  a*10
+}
+t<-c(f(n),g(n))
+type<-c(rep("x*x",times=length(n)), 
+            rep("x",times=length(n)))
+density<-c(rep("n",times=length(n)), 
+           rep("1",times=length(n)))
+n<-c(n,n)
+d = data.frame(n,t,type,density)
+
+#data = rbind(d,data)
+
+
+p <- ggplot(data,aes(x=n,y=t,group=factor(density)))+
+  geom_point(aes(shape = factor(density),color = factor(density))) + 
   #geom_path(aes(group = factor(density)))+
-  geom_smooth()+ # argument se=F schaltet konvidenzintervall aus
+  geom_smooth(aes(color=factor(density)),method="lm", se=TRUE, formula = y~poly(x,2,raw=TRUE))+ # argument se=F schaltet konvidenzintervall aus
+  
   theme_bw() +
   #umlaut a = \u00e4
-  labs(color = "Eintr\u00e4ge ungleich null",group="Eintr\u00e4ge ungleich null",linetype="Eintr\u00e4ge ungleich null",shape="Eintr\u00e4ge ungleich null")+
+  labs(color = "Aufwand",shape="Eintr\u00e4ge ungleich null")+
   theme(
-    legend.position = c(.97, .03),
-    legend.justification = c("right", "bottom"),
+    legend.position = c(.03, .97),
+    legend.justification = c("left", "top"),
     legend.box.just = "right",
-    legend.margin = margin(6, 6, 6, 6)
+    legend.margin = margin(6, 6, 6, 6),
+    legend.box = "horizontal"
   )+
-scale_y_log10()+
+#scale_y_log10()+
   ylab("Zeit [\u03bcs]") +
-  xlab("Matrix (n\u00d7n)")
+  xlab("Matrix (n\u00d7n)")+
+  scale_color_discrete(labels = c("\u039f(n)", "\u039f(n)", "\u039f(n)","\u039f(n\u00b2)"))+
+  scale_shape_manual(values = c('1'=16,'3'=17,'9'=15,'n'=3))
+  
+  #vergleichsfunktionen
+  #geom_line(data = d, aes(x=n, y=t, group=density, colour=density))
+
+
+
+
 
 p
 
