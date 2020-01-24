@@ -36,7 +36,7 @@ public:
 
 
 
-    explicit operator Eigen::MatrixXd() const;
+    Eigen::MatrixXd toEigen() const;
 
     const DenseMatrix<T> operator-() const;
 
@@ -64,7 +64,10 @@ public:
 
     char isSymmetric() const;
 
-    Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau, int* count = nullptr);
+    Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau, int* count = nullptr,Vector<double>* rs = nullptr);
+
+    double cond();
+
 };
 
 template<typename T>
@@ -364,9 +367,9 @@ const linag::DenseMatrix<T> linag::DenseMatrix<T>::operator-() const{
     return (T)-1* (*this);
 }
 
-template <typename T>
-linag::DenseMatrix<T>::operator Eigen::MatrixXd() const{
-    Eigen::MatrixXd res = Eigen::MatrixXcd::Zero(dim().rows,dim().cols);
+template <>
+Eigen::MatrixXd linag::DenseMatrix<double>::toEigen () const{
+    Eigen::MatrixXd res = Eigen::MatrixXd(dim().rows,dim().cols);
 
     for (int i = 0; i < dim().rows; ++i) {
         for (int j = 0; j < dim().cols; ++j) {
@@ -494,8 +497,10 @@ void linag::DenseMatrix<T>::id(){
 }
 
 template <typename T>
-linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau, int* count){
+linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau, int* count,linag::Vector<double>* rs){
     assert(tau>0 && dim().rows == b.length());
+    if(rs)
+        assert(rs->length() == dim().rows);//exact result after n iterations
 
     linag::Vector<T> r1(dim().rows);
     linag::Vector<T> r2(dim().rows);
@@ -510,6 +515,11 @@ linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T>
     d = r1;
     if(count)
         *count = 0;
+    if(rs) {
+        rs->zeros();
+        rs->at(0) = r1.l2norm();
+    }
+    int rsc = 1;
     do{
         z = (*this)*d;
         alpha = (r1*r1)/(d*z);
@@ -521,6 +531,8 @@ linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T>
         r1=r2;
         if(count)
             ++*count;
+        if(rs && rsc < rs->length())
+            rs->at(rsc++) = r2.l2norm();
     }while (r2.l2norm()>tau);
 
     return x;
@@ -582,6 +594,21 @@ linag::DenseMatrix<T> &linag::DenseMatrix<T>::operator=(const linag::SparseMatri
     return *this;
 }
 
+template <typename T>
+double linag::DenseMatrix<T>::cond(){
+    Eigen::VectorXcd eigenvalues = toEigen().eigenvalues();
+
+    double min=std::fabs(eigenvalues(0).real()),max = std::fabs(eigenvalues(0).real());
+    for (int i = 1; i < eigenvalues.size(); ++i) {
+        if(std::fabs(eigenvalues(i).real()) > max)
+            max = std::fabs(eigenvalues(i).real());
+
+        if(std::fabs(eigenvalues(i).real()) < min)
+            min = std::fabs(eigenvalues(i).real());
+    }
+
+    return max/min;
+}
 
 
 
