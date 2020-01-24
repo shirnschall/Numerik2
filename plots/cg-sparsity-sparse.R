@@ -26,10 +26,10 @@ lm_eqn = function(df){
 
 n <- seq(from=0.1,to=1250,by=0.1)
 f <- function(a){
-  a*a
+  a*a/5
 }
 g <- function(a){
-  a
+  a*2
 }
 t<-c(f(n),g(n))
 type<-c(rep("x*x",times=length(n)), 
@@ -48,14 +48,14 @@ scientific <- function(x){
 }
 
 
-p <- ggplot(data,aes(x=n,y=t,group=factor(density)))+
+p <- ggplot(data,aes(x=n,y=t))+
   geom_point(aes(shape = factor(density),color = factor(density))) + 
   #geom_path(aes(group = factor(density)))+
-  geom_smooth(aes(color=factor(density)),method="lm", se=TRUE, formula = y~poly(x,1,raw=TRUE))+ # argument se=F schaltet konvidenzintervall aus
+  geom_smooth(aes(color=factor(density)),size=0.5,method="lm", se=FALSE, formula = y~poly(x,1,raw=TRUE))+ # argument se=F schaltet konvidenzintervall aus
   
   theme_bw() +
   #umlaut a = \u00e4
-  labs(color = "Aufwand",shape="Eintr\u00e4ge ungleich null")+
+  labs(linetype="Vergleichsgerade", color = "Eintr\u00e4ge ungleich null (pro Zeile)",shape="Eintr\u00e4ge ungleich null (pro Zeile)")+
   theme(
     legend.position = c(.03, .97),
     legend.justification = c("left", "top"),
@@ -63,17 +63,19 @@ p <- ggplot(data,aes(x=n,y=t,group=factor(density)))+
     legend.margin = margin(6, 6, 6, 6),
     legend.box = "horizontal"
   )+
-  scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+  scale_y_log10(limits = c(10^0.5,1000000),
+                breaks = trans_breaks("log10", function(x) 10^x),
                 labels = trans_format("log10", math_format(10^.x)))+
   scale_x_log10(limits = c(10,1000),
                 breaks = trans_breaks("log10", function(x) 10^x),
                 labels = trans_format("log10", math_format(10^.x)))+
   ylab("Zeit [\u03bcs] pro Iterationsschritt") +
   xlab("Matrix (n\u00d7n)")+
-  scale_color_discrete(labels = c("\u039f(n)", "\u039f(n)", "\u039f(n)","\u039f(n\u00b2)"))
+  #scale_color_discrete(labels = c("\u039f(n)", "\u039f(n)", "\u039f(n)","\u039f(n\u00b2)"))+
   #scale_shape_manual(values = c('1'=16,'3'=17,'9'=15,'n'=3))+
   #vergleichsfunktionen
-  #geom_line(data = d, aes(x=n, y=t,color=density))
+  geom_line(data = d, aes(x=n, y=t,linetype=type))+
+  scale_linetype_discrete(labels = c("\u039f(n)","\u039f(n\u00b2)"))
 
 
 

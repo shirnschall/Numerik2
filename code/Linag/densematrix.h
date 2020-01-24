@@ -508,7 +508,8 @@ linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T>
     unsigned long t = 0;
     r1 = b - (*this)*x;
     d = r1;
-    *count = 0;
+    if(count)
+        *count = 0;
     do{
         z = (*this)*d;
         alpha = (r1*r1)/(d*z);
@@ -518,7 +519,8 @@ linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T>
         d = r2 + betta*d;
 
         r1=r2;
-        ++*count;
+        if(count)
+            ++*count;
     }while (r2.l2norm()>tau);
 
     return x;
