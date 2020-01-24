@@ -42,7 +42,7 @@ namespace linag {
         const Vector<int>& getI() const{ return I;};
         const Vector<int>& getJ() const{ return J;};
 
-        Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau);
+        Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau, int* count = nullptr);
     };
 
 
@@ -98,7 +98,7 @@ const linag::Vector<T> linag::operator*(const linag::SparseMatrix<T>& x,const li
 //}
 
 template <typename T>
-linag::Vector<T> linag::SparseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau){
+linag::Vector<T> linag::SparseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau, int* count){
     assert(tau>0 && dim().rows == b.length());
 
     linag::Vector<T> r1(dim().rows);
@@ -112,7 +112,7 @@ linag::Vector<T> linag::SparseMatrix<T>::conjugateGradientSolver(linag::Vector<T
     unsigned long t = 0;
     r1 = b - (*this)*x;
     d = r1;
-
+    *count = 0;
     do{
         z = (*this)*d;
         alpha = (r1*r1)/(d*z);
@@ -122,6 +122,7 @@ linag::Vector<T> linag::SparseMatrix<T>::conjugateGradientSolver(linag::Vector<T
         d = r2 + betta*d;
 
         r1=r2;
+        ++*count;
     }while (r2.l2norm()>tau);
 
     return x;

@@ -64,7 +64,7 @@ public:
 
     char isSymmetric() const;
 
-    Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau);
+    Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau, int* count = nullptr);
 };
 
 template<typename T>
@@ -86,6 +86,7 @@ template<typename T>
 const Vector<T> operator*(const Vector<T>& x,const DenseMatrix<T>& y);
 template<typename T>
 const Vector<T> operator*(const DenseMatrix<T>& x,const Vector<T>& y);
+
 
 template<typename T>
 std::ostream& operator<<(std::ostream& output,const DenseMatrix<T>& x);
@@ -116,8 +117,13 @@ std::ostream& operator<<(std::ostream& output,const DenseMatrix<T>& x);
     template <>
     void linag::DenseMatrix<double>::randDiag(){
         int n = dim().cols<dim().rows?dim().cols:dim().rows;
-        for (int i = 0; i < n; ++i) {
-            at(i,i) = (double)std::rand()/RAND_MAX;
+        for (int i = 0; i < dim().rows; ++i) {
+            for (int j = 0; j < dim().cols; ++j) {
+                if(i == j)
+                    at(i,j) = (double)std::rand()/RAND_MAX;
+                else
+                    at(i,j) = 0;
+            }
         }
     }
 
@@ -126,8 +132,11 @@ std::ostream& operator<<(std::ostream& output,const DenseMatrix<T>& x);
         assert(isSymmetric() && notZeroPerLine <= dim().cols && notZeroPerLine%2);
 
         randLT();
+        double c = 500;
+        linag::DenseMatrix<double> diagM(dim());
+        diagM.randDiag();
 
-        (*this) = (*this) * transpose();
+        (*this) = (*this) + transpose() + c * diagM;
 
         for (int i = 0; i < dim().rows; ++i) {
             for (int j = i+std::ceil((double)notZeroPerLine/2); j < dim().cols; ++j) {
@@ -485,7 +494,7 @@ void linag::DenseMatrix<T>::id(){
 }
 
 template <typename T>
-linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau){
+linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau, int* count){
     assert(tau>0 && dim().rows == b.length());
 
     linag::Vector<T> r1(dim().rows);
@@ -499,7 +508,7 @@ linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T>
     unsigned long t = 0;
     r1 = b - (*this)*x;
     d = r1;
-
+    *count = 0;
     do{
         z = (*this)*d;
         alpha = (r1*r1)/(d*z);
@@ -509,6 +518,7 @@ linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T>
         d = r2 + betta*d;
 
         r1=r2;
+        ++*count;
     }while (r2.l2norm()>tau);
 
     return x;

@@ -26,10 +26,10 @@ lm_eqn = function(df){
 
 n <- seq(from=0.1,to=1250,by=0.1)
 f <- function(a){
-  a*a*100
+  a*a
 }
 g <- function(a){
-  a*10
+  a
 }
 t<-c(f(n),g(n))
 type<-c(rep("x*x",times=length(n)), 
@@ -42,10 +42,16 @@ d = data.frame(n,t,type,density)
 #data = rbind(d,data)
 
 
+
+scientific <- function(x){
+  ifelse(x==0, "0", parse(text=gsub("[+]", "", gsub("e", " %*% 10^", scientific_format()(x)))))
+}
+
+
 p <- ggplot(data,aes(x=n,y=t,group=factor(density)))+
   geom_point(aes(shape = factor(density),color = factor(density))) + 
   #geom_path(aes(group = factor(density)))+
-  geom_smooth(aes(color=factor(density)),method="lm", se=TRUE, formula = y~poly(x,2,raw=TRUE))+ # argument se=F schaltet konvidenzintervall aus
+  geom_smooth(aes(color=factor(density)),method="lm", se=TRUE, formula = y~poly(x,1,raw=TRUE))+ # argument se=F schaltet konvidenzintervall aus
   
   theme_bw() +
   #umlaut a = \u00e4
@@ -57,14 +63,17 @@ p <- ggplot(data,aes(x=n,y=t,group=factor(density)))+
     legend.margin = margin(6, 6, 6, 6),
     legend.box = "horizontal"
   )+
-#scale_y_log10()+
-  ylab("Zeit [\u03bcs]") +
+  scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                labels = trans_format("log10", math_format(10^.x)))+
+  scale_x_log10(limits = c(10,1000),
+                breaks = trans_breaks("log10", function(x) 10^x),
+                labels = trans_format("log10", math_format(10^.x)))+
+  ylab("Zeit [\u03bcs] pro Iterationsschritt") +
   xlab("Matrix (n\u00d7n)")+
-  scale_color_discrete(labels = c("\u039f(n)", "\u039f(n)", "\u039f(n)","\u039f(n\u00b2)"))+
-  scale_shape_manual(values = c('1'=16,'3'=17,'9'=15,'n'=3))
-  
+  scale_color_discrete(labels = c("\u039f(n)", "\u039f(n)", "\u039f(n)","\u039f(n\u00b2)"))
+  #scale_shape_manual(values = c('1'=16,'3'=17,'9'=15,'n'=3))+
   #vergleichsfunktionen
-  #geom_line(data = d, aes(x=n, y=t, group=density, colour=density))
+  #geom_line(data = d, aes(x=n, y=t,color=density))
 
 
 
@@ -73,4 +82,4 @@ p <- ggplot(data,aes(x=n,y=t,group=factor(density)))+
 p
 
 
-ggsave("cg-sparsity-sparse.png", units="in", width=5, height=4, dpi=300)
+ggsave("cg-sparsity-sparse.png", units="in", width=7, height=7, dpi=500)
