@@ -4,8 +4,8 @@ require(scales)
 require(dplyr)
 
 
-data=read.csv("/Users/shirnschall/Desktop/Numerik2/plots/cg-kond-res",header = TRUE ,sep = "\t")
-#data=read.csv("C:\\Users\\shirnschall\\Documents\\GitHub\\Numerik2\\plots\\cg-sparsity-sparse",header = TRUE ,sep = "\t")
+#data=read.csv("/Users/shirnschall/Desktop/Numerik2/plots/cg-kond-res",header = TRUE ,sep = "\t")
+data=read.csv("C:\\Users\\shirnschall\\Documents\\GitHub\\Numerik2\\plots\\cg-kond-res",header = TRUE ,sep = "\t")
 
 #data=data[!(data$density==7),]
 #data=data[!(data$density==5),]
@@ -24,9 +24,9 @@ lm_eqn = function(df){
 }
 
 
-n <- seq(from=0.1,to=1250,by=0.1)
+n <- seq(from=10,to=150,by=0.1)
 f <- function(a){
-  ((sqrt(211.573)-1)/(sqrt(211.573)+1))^a
+  2*((sqrt(273)-1)/(sqrt(273)+1))^a
 }
 g <- function(a){
   ((sqrt(504.653)-1)/(sqrt(504.653)+1))^a
@@ -51,7 +51,7 @@ scientific <- function(x){
 p <- ggplot(data[!(data$r==0),],aes(x=i,y=r))+
   geom_point(aes(shape = factor(k),color = factor(k))) + 
   geom_path(aes(group = factor(k),color = factor(k)))+
-  #geom_smooth(aes(color=factor(k)),size=0.5,method="lm", se=FALSE, formula = y~poly(x,1,raw=TRUE))+ # argument se=F schaltet konvidenzintervall aus
+  geom_smooth(aes(color=factor(k)),size=0.5,method="lm", se=FALSE, formula = y~poly(x,1,raw=TRUE))+ # argument se=F schaltet konvidenzintervall aus
   
   theme_bw() +
   #umlaut a = \u00e4
@@ -64,15 +64,15 @@ p <- ggplot(data[!(data$r==0),],aes(x=i,y=r))+
     legend.box = "horizontal"
   )+
   scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
-                labels = trans_format("log10", math_format(10^.x)))
+                labels = trans_format("log10", math_format(10^.x)))+
   #scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
-  #              labels = trans_format("log10", math_format(10^.x)))
+  #              labels = trans_format("log10", math_format(10^.x)))+
   #ylab("Zeit [\u03bcs] pro Iterationsschritt") +
   #xlab("Matrix (n\u00d7n)")+
   #scale_color_discrete(labels = c("\u039f(n)", "\u039f(n)", "\u039f(n)","\u039f(n\u00b2)"))+
   #scale_shape_manual(values = c('1'=16,'3'=17,'9'=15,'n'=3))+
   #vergleichsfunktionen
-  #geom_line(data = d, aes(x=n, y=t,linetype=type))
+  geom_line(data = d, aes(x=n, y=t,linetype=type))
   #scale_linetype_discrete(labels = c("\u039f(n)","\u039f(n\u00b2)"))
 
 

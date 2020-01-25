@@ -11,6 +11,10 @@
 #include "size.h"
 
 namespace linag {
+    //say class exists without defining it
+    template <typename T> class DenseMatrix;
+
+
     template<typename T>
     class Vector{
     private:
@@ -35,6 +39,7 @@ namespace linag {
         unsigned long length() const;
 
         double l2norm();
+        double Anorm(const linag::DenseMatrix<T>& A) const;
 
         void zeros();
         void ones();
@@ -150,12 +155,15 @@ void linag::Vector<T>::rand(){
 template<typename T>
 double linag::Vector<T>::l2norm(){
     double sum = 0;
-    for (int i = 0; i < dim().rows; ++i) {
-        for (int j = 0; j < dim().cols; ++j) {
-            sum += std::fabs(double((at(i+j)*at(i+j))));
-        }
+    for (int i = 0; i < length(); ++i) {
+            sum += std::fabs(double((at(i)*at(i))));
     }
     return std::sqrt(sum);
+}
+
+template<typename T>
+double linag::Vector<T>::Anorm(const linag::DenseMatrix<T>& A) const{
+    return std::sqrt((*this) * A * (*this));
 }
 
 template <typename T>

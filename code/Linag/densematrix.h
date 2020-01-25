@@ -64,7 +64,7 @@ public:
 
     char isSymmetric() const;
 
-    Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau, int* count = nullptr,Vector<double>* rs = nullptr);
+    Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau, int* count = nullptr,Vector<linag::Vector<double>*>* xs = nullptr);
 
     double cond();
 
@@ -497,10 +497,10 @@ void linag::DenseMatrix<T>::id(){
 }
 
 template <typename T>
-linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau, int* count,linag::Vector<double>* rs){
+linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau, int* count,linag::Vector<linag::Vector<double>*>* xs){
     assert(tau>0 && dim().rows == b.length());
-    if(rs)
-        assert(rs->length() == dim().rows);//exact result after n iterations
+    if(xs)
+        assert(xs->length() == dim().rows);//exact result after n iterations
 
     linag::Vector<T> r1(dim().rows);
     linag::Vector<T> r2(dim().rows);
@@ -515,11 +515,13 @@ linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T>
     d = r1;
     if(count)
         *count = 0;
-    if(rs) {
-        rs->zeros();
-        rs->at(0) = r1.l2norm();
+    if(xs) {
+        for (int i = 1; i < xs->length(); ++i) {
+            xs->at(i) = nullptr;
+        }
+        xs->at(0) = new linag::Vector<double>(x);
     }
-    int rsc = 1;
+    int xsc = 1;
     do{
         z = (*this)*d;
         alpha = (r1*r1)/(d*z);
@@ -531,8 +533,8 @@ linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T>
         r1=r2;
         if(count)
             ++*count;
-        if(rs && rsc < rs->length())
-            rs->at(rsc++) = r2.l2norm();
+        if(xs && xsc < xs->length())
+            xs->at(xsc++) = new linag::Vector<double>(x);
     }while (r2.l2norm()>tau);
 
     return x;
