@@ -53,6 +53,7 @@ public:
     void zeros();
     void id();
     void diag(T value);
+    void diag(const DenseMatrix<T>& rhs);
     void rand();
     //upper tirangular matrix
     void randLT();
@@ -550,6 +551,18 @@ void linag::DenseMatrix<T>::diag(T value){
     int n = dim().cols<dim().rows?dim().cols:dim().rows;
     for (int i = 0; i < n; ++i) {
         at(i,i) = value;
+    }
+}
+
+template <typename T>
+void linag::DenseMatrix<T>::diag(const linag::DenseMatrix<T>& rhs){
+    assert(dim() == rhs.dim());
+    zeros();
+    for (int i = 0; i < rhs.dim().rows; ++i) {
+        for (int j = 0; j < rhs.dim().cols; ++j) {
+            if(i == j)
+                at(i,j) = rhs.at(i,j);
+        }
     }
 }
 

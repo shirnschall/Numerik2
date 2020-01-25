@@ -42,7 +42,10 @@ namespace linag {
         const Vector<int>& getI() const{ return I;};
         const Vector<int>& getJ() const{ return J;};
 
-        Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau, int* count = nullptr);
+        Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau, int* count,linag::Vector<linag::Vector<double>*>* xs);
+        Vector<T> preCondConjugateGradientSolver(const linag::SparseMatrix<T>& P, const linag::Vector<T> b, double tau, int* count,linag::Vector<linag::Vector<double>*>* xs);
+
+
     };
 
 
@@ -98,8 +101,10 @@ const linag::Vector<T> linag::operator*(const linag::SparseMatrix<T>& x,const li
 //}
 
 template <typename T>
-linag::Vector<T> linag::SparseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau, int* count){
+linag::Vector<T> linag::SparseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau, int* count,linag::Vector<linag::Vector<double>*>* xs){
     assert(tau>0 && dim().rows == b.length());
+    if(xs)
+        assert(xs->length() == dim().rows);//exact result after n iterations
 
     linag::Vector<T> r1(dim().rows);
     linag::Vector<T> r2(dim().rows);
@@ -112,7 +117,15 @@ linag::Vector<T> linag::SparseMatrix<T>::conjugateGradientSolver(linag::Vector<T
     unsigned long t = 0;
     r1 = b - (*this)*x;
     d = r1;
-    *count = 0;
+    if(count)
+        *count = 0;
+    if(xs) {
+        for (int i = 1; i < xs->length(); ++i) {
+            xs->at(i) = nullptr;
+        }
+        xs->at(0) = new linag::Vector<double>(x);
+    }
+    int xsc = 1;
     do{
         z = (*this)*d;
         alpha = (r1*r1)/(d*z);
@@ -122,11 +135,65 @@ linag::Vector<T> linag::SparseMatrix<T>::conjugateGradientSolver(linag::Vector<T
         d = r2 + betta*d;
 
         r1=r2;
-        ++*count;
+        if(count)
+            ++*count;
+        if(xs && xsc < xs->length())
+            xs->at(xsc++) = new linag::Vector<double>(x);
     }while (r2.l2norm()>tau);
 
     return x;
 }
+
+
+template<typename T>
+linag::Vector<T> linag::SparseMatrix<T>::preCondConjugateGradientSolver(const linag::SparseMatrix<T>& Pinv, const linag::Vector<T> b, double tau, int* count,linag::Vector<linag::Vector<double>*>* xs){
+    assert(tau>0 && dim().rows == b.length());
+    if(xs)
+        assert(xs->length() == dim().rows);//exact result after n iterations
+
+    linag::Vector<T> r1(dim().rows);
+    linag::Vector<T> r2(dim().rows);
+    linag::Vector<T> d(dim().rows);
+    linag::Vector<T> x(dim().rows);
+    linag::Vector<T> z(dim().rows);
+    linag::Vector<T> z1(dim().rows);
+    linag::Vector<T> z2(dim().rows);
+    x.rand();
+    T alpha;
+    T betta;
+    unsigned long t = 0;
+    r1 = b - (*this)*x;
+    z1 = Pinv * r1;
+    d = z1;
+    if(count)
+        *count = 0;
+    if(xs) {
+        for (int i = 1; i < xs->length(); ++i) {
+            xs->at(i) = nullptr;
+        }
+        xs->at(0) = new linag::Vector<double>(x);
+    }
+    int xsc = 1;
+    do{
+        z = (*this)*d;
+        alpha = (r1*z1)/(d*z);
+        x = x + alpha*d;
+        r2 = r1 - alpha*z;
+        z2 = Pinv*r2;
+        betta = (z2*r2)/(z1*r1);
+        d = z2 + betta*d;
+
+        r1=r2;
+        z1=z2;
+        if(count)
+            ++*count;
+        if(xs && xsc < xs->length())
+            xs->at(xsc++) = new linag::Vector<double>(x);
+    }while (r2.l2norm()>tau);
+
+    return x;
+}
+
 
 template <typename T>
 char linag::SparseMatrix<T>::isSymmetric() const{

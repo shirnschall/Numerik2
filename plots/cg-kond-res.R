@@ -4,8 +4,8 @@ require(scales)
 require(dplyr)
 
 
-#data=read.csv("/Users/shirnschall/Desktop/Numerik2/plots/cg-kond-res",header = TRUE ,sep = "\t")
-data=read.csv("C:\\Users\\shirnschall\\Documents\\GitHub\\Numerik2\\plots\\cg-kond-res",header = TRUE ,sep = "\t")
+data=read.csv("/Users/shirnschall/Desktop/Numerik2/plots/cg-kond-res",header = TRUE ,sep = "\t")
+#data=read.csv("C:\\Users\\shirnschall\\Documents\\GitHub\\Numerik2\\plots\\cg-kond-res",header = TRUE ,sep = "\t")
 
 #data=data[!(data$density==7),]
 #data=data[!(data$density==5),]

@@ -10,9 +10,26 @@ int main() {
 
     srand(5);
 
-    linag::Vector<double> test{1,2,3,4,5,6};
+    linag::DenseMatrix<double> test(200,200);
+    linag::DenseMatrix<double> pinv(200,200);
+    linag::Vector<double> b(200);
+    b.rand();
+    test.randSPD(9);
+    pinv.diag(test);
+    pinv = pinv.inverse();
 
-    std::cout << test << std::endl << test.l2norm();
+    linag::SparseMatrix<double> testS(test);
+    linag::SparseMatrix<double> pinvS(pinv);
+
+    int count = 0;
+
+
+    std::cout << test.conjugateGradientSolver(b,10e-10, &count, nullptr) <<
+              std::endl << count << std::endl;
+
+    std::cout << testS.preCondConjugateGradientSolver(pinvS,b,10e-10, &count, nullptr) <<
+                std::endl << count << std::endl;
+
 
 
     return 0;
