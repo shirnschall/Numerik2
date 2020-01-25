@@ -7,8 +7,9 @@
 #include <cmath>
 #include <cassert>
 #include <cstring>
-
+#include "Eigen/Dense"
 #include "size.h"
+//#include "Eigen/src/Core/Matrix.h"
 
 namespace linag {
     //say class exists without defining it
@@ -30,6 +31,7 @@ namespace linag {
 
         Vector(std::initializer_list<T> init);
 
+        Eigen::VectorXd toEigen() const;
         const Vector<T> operator-() const;
 
         T& at(int index);
@@ -281,6 +283,16 @@ template <typename T>
 linag::Vector<T>::~Vector(){
     if(data!= nullptr)
         free(data);
+}
+
+template <>
+Eigen::VectorXd linag::Vector<double>::toEigen () const{
+    Eigen::VectorXd res = Eigen::VectorXd(length());
+
+    for (int i = 0; i < length(); ++i) {
+            res(i)=at(i);
+    }
+    return res;
 }
 
 
