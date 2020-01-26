@@ -59,7 +59,7 @@ p <- ggplot(data,aes(x=n,y=t))+
   theme(
     legend.position = c(.03, .97),
     legend.justification = c("left", "top"),
-    legend.box.just = "right",
+    legend.box.just = "top",
     legend.margin = margin(6, 6, 6, 6),
     legend.box = "horizontal"
   )+
@@ -70,7 +70,7 @@ p <- ggplot(data,aes(x=n,y=t))+
                 breaks = trans_breaks("log10", function(x) 10^x),
                 labels = trans_format("log10", math_format(10^.x)))+
   ylab("Zeit [\u03bcs] pro Iterationsschritt") +
-  xlab("Matrix (n\u00d7n)")+
+  xlab(TeX("Matrix ($n\\times n$)"))+
   #scale_color_discrete(labels = c("\u039f(n)", "\u039f(n)", "\u039f(n)","\u039f(n\u00b2)"))+
   #scale_shape_manual(values = c('1'=16,'3'=17,'9'=15,'n'=3))+
   #vergleichsfunktionen
@@ -84,4 +84,4 @@ p <- ggplot(data,aes(x=n,y=t))+
 p
 
 
-ggsave("cg-sparsity-sparse.png", units="in", width=7, height=7, dpi=500)
+ggsave("cg-sparsity-sparse.png", units="in", width=7, height=5, dpi=500)

@@ -42,8 +42,8 @@ namespace linag {
         const Vector<int>& getI() const{ return I;};
         const Vector<int>& getJ() const{ return J;};
 
-        Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau, int* count,linag::Vector<linag::Vector<double>*>* xs);
-        Vector<T> preCondConjugateGradientSolver(const linag::SparseMatrix<T>& P, const linag::Vector<T> b, double tau, int* count,linag::Vector<linag::Vector<double>*>* xs);
+        Vector<T> conjugateGradientSolver(linag::Vector<T> b, double tau, int* count = nullptr,linag::Vector<linag::Vector<double>*>* xs = nullptr, linag::Vector<double>* rs = nullptr);
+        Vector<T> preCondConjugateGradientSolver(const linag::SparseMatrix<T>& P, const linag::Vector<T> b, double tau, int* count = nullptr,linag::Vector<linag::Vector<double>*>* xs = nullptr, linag::Vector<double>* rs = nullptr);
 
 
     };
@@ -101,10 +101,12 @@ const linag::Vector<T> linag::operator*(const linag::SparseMatrix<T>& x,const li
 //}
 
 template <typename T>
-linag::Vector<T> linag::SparseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau, int* count,linag::Vector<linag::Vector<double>*>* xs){
+linag::Vector<T> linag::SparseMatrix<T>::conjugateGradientSolver(linag::Vector<T> b, double tau, int* count,linag::Vector<linag::Vector<double>*>* xs, linag::Vector<double>* rs){
     assert(tau>0 && dim().rows == b.length());
     if(xs)
         assert(xs->length() == dim().rows);//exact result after n iterations
+    if(rs)
+        assert(rs->length() == dim().rows);//exact result after n iterations
 
     linag::Vector<T> r1(dim().rows);
     linag::Vector<T> r2(dim().rows);
@@ -125,7 +127,12 @@ linag::Vector<T> linag::SparseMatrix<T>::conjugateGradientSolver(linag::Vector<T
         }
         xs->at(0) = new linag::Vector<double>(x);
     }
-    int xsc = 1;
+    if(rs) {
+        for (int i = 1; i < rs->length(); ++i) {
+            rs->at(i) = 0;
+        }
+        rs->at(0) = r1.l2norm();
+    }
     do{
         z = (*this)*d;
         alpha = (r1*r1)/(d*z);
@@ -137,19 +144,25 @@ linag::Vector<T> linag::SparseMatrix<T>::conjugateGradientSolver(linag::Vector<T
         r1=r2;
         if(count)
             ++*count;
-        if(xs && xsc < xs->length())
-            xs->at(xsc++) = new linag::Vector<double>(x);
+        if(xs && t < xs->length())
+            xs->at(t) = new linag::Vector<double>(x);
+        if(rs && t < rs->length())
+            rs->at(t) = r2.l2norm();
+        ++t;
     }while (r2.l2norm()>tau);
 
     return x;
 }
 
 
+
 template<typename T>
-linag::Vector<T> linag::SparseMatrix<T>::preCondConjugateGradientSolver(const linag::SparseMatrix<T>& Pinv, const linag::Vector<T> b, double tau, int* count,linag::Vector<linag::Vector<double>*>* xs){
+linag::Vector<T> linag::SparseMatrix<T>::preCondConjugateGradientSolver(const linag::SparseMatrix<T>& Pinv, const linag::Vector<T> b, double tau, int* count,linag::Vector<linag::Vector<double>*>* xs, linag::Vector<double>* rs){
     assert(tau>0 && dim().rows == b.length());
     if(xs)
         assert(xs->length() == dim().rows);//exact result after n iterations
+    if(rs)
+        assert(rs->length() == dim().rows);//exact result after n iterations
 
     linag::Vector<T> r1(dim().rows);
     linag::Vector<T> r2(dim().rows);
@@ -173,7 +186,12 @@ linag::Vector<T> linag::SparseMatrix<T>::preCondConjugateGradientSolver(const li
         }
         xs->at(0) = new linag::Vector<double>(x);
     }
-    int xsc = 1;
+    if(rs) {
+        for (int i = 1; i < rs->length(); ++i) {
+            rs->at(i) = 0;
+        }
+        rs->at(0) = r1.l2norm();
+    }
     do{
         z = (*this)*d;
         alpha = (r1*z1)/(d*z);
@@ -187,8 +205,11 @@ linag::Vector<T> linag::SparseMatrix<T>::preCondConjugateGradientSolver(const li
         z1=z2;
         if(count)
             ++*count;
-        if(xs && xsc < xs->length())
-            xs->at(xsc++) = new linag::Vector<double>(x);
+        if(xs && t < xs->length())
+            xs->at(t) = new linag::Vector<double>(x);
+        if(rs && t < rs->length())
+            rs->at(t) = r2.l2norm();
+        ++t;
     }while (r2.l2norm()>tau);
 
     return x;

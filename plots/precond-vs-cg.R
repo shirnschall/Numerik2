@@ -68,8 +68,8 @@ p <- ggplot(data[!(data$r==0),],aes(x=t,y=r))+
                 labels = trans_format("log10", math_format(10^.x)))+
   #scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
   #              labels = trans_format("log10", math_format(10^.x)))
-  ylab(TeX("Formula: $\\frac{2hc^2}{\\lambda^\\beta}$")) +
-  xlab("Iterationsschritt (t)")+
+  ylab(TeX("Residuum $||r_t||$")) +
+  xlab(TeX("Iterationsschritt ($t$)"))+
   scale_color_discrete(labels = c("CG", "CG mit Vorkonditionierung"))+
   scale_shape_discrete(labels = c("CG", "CG mit Vorkonditionierung"))
   #scale_shape_manual(values = c('1'=16,'3'=17,'9'=15,'n'=3))+

@@ -17,7 +17,7 @@ int main() {
     //csv header
     std::cout << "n\tt\ttype\n";
 
-    for (int n = 10; n < 5000; n+=200) {
+    for (int n = 10; n < 50000; n+=200) {
         //create random symmetric positive definite matrix A and vector b
         linag::DenseMatrix<double> A(n, n);
         linag::Vector<double> b(A.dim().rows);
@@ -32,7 +32,7 @@ int main() {
         A.toEigen().llt().solve(b.toEigen());
         //A.conjugateGradientSolver(b,10e-10);
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-        std::cout << n << '\t' << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << "\tllt\n";
+        std::cout << n << '\t' << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "\tllt\n";
 
         //begin = std::chrono::steady_clock::now();
         //ASparse.conjugateGradientSolver(b,10e-10);

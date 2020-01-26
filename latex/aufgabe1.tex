@@ -344,9 +344,9 @@ date=short                % Datumsformat
 	
 	\begin{figure}[H]
 		\begin{center}
-			\includegraphics[width=0.8\textwidth]{../plots/fehler-cgloglog.png}
+			\includegraphics[width=0.8\textwidth]{../plots/eigen.png}
 		\end{center}
-		\caption{Fehlerkonvergenz abhängig von $\kappa$ und t gegen 0}
+		\caption{Ben\"otigte Zeit in $\mu s$ um Gleichungssysteme mit verschieden gro\ss en dicht besetzte $n\times n$-Koeffizientenmatrizen mittels Cholesky-Zerlegung zu l\"osen}
 		\label{fig:zeiteigensolver}	
 	\end{figure}
 	
@@ -456,14 +456,14 @@ date=short                % Datumsformat
 		\caption{Vorkonditionierte CG-Verfahren} \label{alg:vcg}
 	\end{algorithm}
 	
-	In \cref{fig:vergleich-cg-pre} ist zu sehen, dass aufgrund der kleineren Konditionszahl wesentlich weniger Iterationsschritte benötigt werden, bzw. das vorkonditionierte CG-Verfahren, mit $P = diag(A_{11}, \ldots, A_{nn})$ schneller konvergiert. 
+	In \cref{fig:precond-vs-cg} ist zu sehen, dass aufgrund der kleineren Konditionszahl wesentlich weniger Iterationsschritte benötigt werden, bzw. das vorkonditionierte CG-Verfahren, mit $P = diag(A_{11}, \ldots, A_{nn})$ schneller konvergiert. 
 		
 	\begin{figure}[H]
 		\begin{center}
-			\includegraphics[width=0.8\textwidth]{../plots/cg-sparsity-sparse.png}
+			\includegraphics[width=0.8\textwidth]{../plots/precond-vs-cg.png}
 		\end{center}
-		\caption{Ben\"otigte Zeit in $\mu s$ f\"ur verschieden dicht besetzte $n\times n$-Matrizen im \textit{compressed sparse row}-Format}
-		\label{fig:vergleich-cg-pre}	
+		\caption{Residuum nach Iterationsschritt $t$ f\"ur vorkonditioniertes CG- und CG-Verfahren }
+		\label{fig:precond-vs-cg}	
 	\end{figure}
 	
 	\newpage
