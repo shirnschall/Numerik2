@@ -295,7 +295,7 @@ date=short                % Datumsformat
 		
 		
 		\vspace{5cm}
-		{\huge\bfseries Lineare Gleichungssysteme und \\Dünn besetzte Matrizen\par}
+		{\huge\bfseries CG-Verfahren f\"ur \\dünn besetzte Matrizen\par}
 		\vspace{2cm}
 		{\Large\itshape Rafael Dorigo\\Sebastian Hirnschall\par}
 		\vspace{1cm}
@@ -455,6 +455,16 @@ date=short                % Datumsformat
 		
 		\caption{Vorkonditionierte CG-Verfahren} \label{alg:vcg}
 	\end{algorithm}
+
+	Im Gegensatz zu \cref{alg:cg}  sind in \cref{alg:vcg} pro Iteration zwei Matrix-Vektormultiplikationen notwendig. F\"ur d\"unnbesetzte Matrizen bleibt der Aufwand mit $\mathcal{O}(n)$ also linear, wird jedoch, um eine  von der Koeffizientenmatrix abh\"angige multiplikative Konstante gr\"o\ss er. Die f\"ur einen Iterationsschritt ben\"otigte Zeit ist zusammen mit einer Vergleichsgerade f\"ur $\mathcal{O}(n)$ in \cref{fig:precond-vs-cg-complexity} zu sehen. 
+	
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{../plots/precond-vs-cg-complexity.png}
+		\end{center}
+		\caption{Residuum nach Iterationsschritt $t$ f\"ur vorkonditioniertes CG- und CG-Verfahren }
+		\label{fig:precond-vs-cg-complexity}	
+	\end{figure}
 	
 	In \cref{fig:precond-vs-cg} ist zu sehen, dass aufgrund der kleineren Konditionszahl wesentlich weniger Iterationsschritte benötigt werden, bzw. das vorkonditionierte CG-Verfahren, mit $P = diag(A_{11}, \ldots, A_{nn})$ schneller konvergiert. 
 		

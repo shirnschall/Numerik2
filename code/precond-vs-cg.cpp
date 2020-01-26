@@ -10,9 +10,9 @@ int main() {
 
     srand(5);
 
-    linag::DenseMatrix<double> test(200,200);
-    linag::DenseMatrix<double> pinv(200,200);
-    linag::Vector<double> b(200);
+    linag::DenseMatrix<double> test(201,201);
+    linag::DenseMatrix<double> pinv(201,201);
+    linag::Vector<double> b(201);
     b.rand();
     test.randSPD(9);
     pinv.diag(test);
@@ -24,20 +24,24 @@ int main() {
     int count = 0;
 
     linag::Vector<double> rs(b.length());
+    linag::Vector<linag::Vector<double>*> xs(b.length());
+    linag::Vector<double> res(b.length());
+
+    //std::cout << test.cond() << std::endl;
 
     std::cout << "r\tt\ttype" << std::endl;
 
 
-    testS.conjugateGradientSolver(b,10e-10, &count, nullptr,&rs);
+    res = testS.conjugateGradientSolver(b,10e-16, &count, &xs,&rs);
     for (int i = 0; i < rs.length(); ++i) {
         if(rs.at(i))
-            std::cout << rs.at(i) << '\t' << i << "\tcg" << std::endl;
+            std::cout << (*xs.at(i) - res).Anorm(test) << '\t' << i << "\tcg" << std::endl;
     }
 
-    testS.preCondConjugateGradientSolver(pinvS, b,10e-10, &count, nullptr,&rs);
+    res = testS.preCondConjugateGradientSolver(pinvS, b,10e-16, &count, &xs,&rs);
     for (int i = 0; i < rs.length(); ++i) {
         if(rs.at(i))
-            std::cout << rs.at(i) << '\t' << i << "\tprecg" << std::endl;
+            std::cout << (*xs.at(i) - res).Anorm(test) << '\t' << i << "\tprecg" << std::endl;
     }
 
 

@@ -7,10 +7,10 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {lstlisting}{\numberline {4}compressed spare row Format zu densematrix}{8}
 \defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {5}size.h}{13}
+\contentsline {lstlisting}{\numberline {5}size.h}{14}
 \defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {6}vector.h}{13}
+\contentsline {lstlisting}{\numberline {6}vector.h}{14}
 \defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {7}densematrix.h}{20}
+\contentsline {lstlisting}{\numberline {7}densematrix.h}{21}
 \defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {8}sparsematrix.h}{34}
+\contentsline {lstlisting}{\numberline {8}sparsematrix.h}{35}
