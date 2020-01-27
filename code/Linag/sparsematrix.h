@@ -91,7 +91,6 @@ const linag::Vector<T> linag::operator*(const linag::SparseMatrix<T>& x,const li
             res.at(i) += y.at(x.getJ().at(j)) * x.getV().at(j);
         }
     }
-
     return res;
 }
 
