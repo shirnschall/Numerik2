@@ -381,6 +381,43 @@ date=short                % Datumsformat
 		
 	Nun stellt sich die Frage, ob \cref{alg:cg} äquivalent zum Algorithmus 8.10 \autocite[101]{skript} ist und welcher zu bevorzugen ist.\\
 	\cref{alg:cg} beinhaltet lauter Vektor-Vektor Multiplikationen und zwei Matrix-Vektor Multiplikation, es ist klar, dass die Matrix-Vektor Multiplikation aufwendiger ist als die Vektor-Vektor Multiplikation. Im Algorithmus wird die selbe Matrix-Vektor Multiplikation durchgeführt, d.h. man braucht sich nur einmal das Ergebnis auszurechnen und abzuspeichern. Beim Algorithmus 8.10 gibt es wieder zwei Matrix-Vektor Multiplikationen die die Vektor-Vektor Multiplikationen dominieren. In diesen Algorithmus müssen jedoch zwei unterschiedliche Rechnungen durchgeführt werden, und damit ist \cref{alg:cg} effizienter. Man muss nur noch zeigen, dass die beiden Algorithmen dasselbe Ergebnis liefern.\\
+	Man sieht offensichtlich, dass sich die Algorithmen nur in den While-Schleifen unterscheiden. Zuerst sein in Algorithmus 8.10 angemerkt, dass man Zeile 7 am Ende der While-Schleife verschieben kann und die $t$ in Zeile 8-10 durch $t + 1$ ersetzen kann. \\
+	Durch Multiplizieren von $A$ von links in Zeile 6 im Algorithmus 8.10 folgt
+	\begin{align*}
+		Ax_{t+1} = Ax_t + \alpha_tAd_t
+	\end{align*} 
+	und somit
+	\begin{align}\label{r}
+		r_{t+1} = b - Ax_{t+1} = b - Ax_t - \alpha_tAd_t = r_t - \alpha_tAd_t
+	\end{align}
+	
+	\cref{r} kann man umformen in 
+	\begin{align*}
+		r_{t+1} =  r_t - \alpha_tAd_t \Leftrightarrow Ad_t = \frac{1}{\alpha_t}(r_t - r_{t+1})
+	\end{align*}
+	Das heißt der Zähler von $\beta_t$ kann folgendermaßen umgeschrieben werden
+	\begin{align*}
+		r_{t+1}^{T}Ad_t = \frac{1}{\alpha_t}r_{t+1}^{T}(r_t - r_{t+1}) = -\frac{1}{\alpha_t}r_{t+1}^{T}r_{t+1}
+	\end{align*}
+	da die Residieen orthogonal sind und der Nenner
+	\begin{align*}
+		d_t^{T}Ad_t = (r_t + \beta_{t-1}d_{t-1})^{T}Ad_t =  \frac{1}{\alpha_t}r_{t}^{T}(r_t - r_{t+1}) = \frac{1}{\alpha_t}r_t^{T}r_t 
+	\end{align*}
+	da die Suchrichtungen $d_t$ orthogonal bezüglich des Skalarprodukts sind.
+	Also folgt insgesamt
+	\begin{align*}
+		\beta_t = -\frac{r_{t+1}^{T}Ad_t}{d_t^{T}Ad_t} = -\frac{-\frac{1}{\alpha_t}r_{t+1}^{T}r_{t+1}}{\frac{1}{\alpha_t}r_t^{T}r_t } = \frac{r_{t+1}^{T}r_{t+1}}{r_t^{T}r_t }
+	\end{align*}
+	Außerdem folgt durch einsetzen von Zeile 10 in Zeile 5
+	\begin{align*}
+		\alpha_t = \frac{r_t^{T}d_t}{d_t^{T}Ad_t} = \frac{r_t^{T}(r_t + \beta_{t-1}d_t)}{d_t^{T}Ad_t} = \frac{r_t^{T}r_t}{d_t^{T}Ad_t}
+	\end{align*}
+	da \autocite[vgl.][100]{skript}
+	\begin{align*}
+		r_t^{T}d_j = 0 \quad \forall \text{ }0 \leq j < t
+	\end{align*}
+	
+	
 	
 	
 	Für die Iteration des CG-Verfahrens (ohne Abbruchkriterium) gilt die Fehlerabschätzung \autocite[vgl.][102]{skript}
@@ -432,7 +469,7 @@ date=short                % Datumsformat
 	\begin{align*}
 		x = D^{-T}y
 	\end{align*}
-	Man wählt die Matrix D so, dass für beliebige $z \in \mathbb{R}^{n}$ der Vektor $D^{-T}D^{-1}z$ einfach zu berechnen ist und zugleich $cond(D^{-1}AD^{-T}) < cond(A)$ gilt. Das heißt mithilfe der Matrix $D$ wird das Spektrum (die Menge der Eigenwerte) kleiner, also liegen die Eigenwerte enger zusammen und die spektrale Konditionszahl wird kleiner. 
+	Man wählt die Matrix D so, dass für beliebige $z \in \mathbb{R}^{n}$ der Vektor $D^{-T}D^{-1}z$ einfach zu berechnen ist und zugleich $cond(D^{-1}AD^{-T}) < cond(A)$ gilt. Das heißt mithilfe der Matrix $D$ liegen die Eigenwerte enger zusammen und die spektrale Konditionszahl wird kleiner. 
 	\begin{algorithm}[H]
 		\textbf{Input:} Sei A$\in$ $\mathbb{R}^{n\times n}, x_0 \in \mathbb{R}^{n}, P:=DD^{T}$ und eine Toleranz $\tau > 0$
 		\begin{algorithmic}[1]
