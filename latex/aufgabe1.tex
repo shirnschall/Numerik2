@@ -490,7 +490,7 @@ date=short                % Datumsformat
 		\end{algorithmic}
 		\textbf{Output:} Näherung $x_t$ an $x = A^{-1}b$ mit $\norm{Ax_t-b} < \tau$
 		
-		\caption{Vorkonditionierte CG-Verfahren} \label{alg:vcg}
+		\caption{Vorkonditioniertes CG-Verfahren} \label{alg:vcg}
 	\end{algorithm}
 
 	Im Gegensatz zu \cref{alg:cg}  sind in \cref{alg:vcg} pro Iteration zwei Matrix-Vektormultiplikationen notwendig. F\"ur d\"unnbesetzte Matrizen bleibt der Aufwand mit $\mathcal{O}(n)$ also linear, wird jedoch, um eine  von der Koeffizientenmatrix abh\"angige multiplikative Konstante gr\"o\ss er. Die f\"ur einen Iterationsschritt ben\"otigte Zeit ist zusammen mit einer Vergleichsgerade f\"ur $\mathcal{O}(n)$ in \cref{fig:precond-vs-cg-complexity} zu sehen. 
@@ -505,13 +505,23 @@ date=short                % Datumsformat
 	
 	In \cref{fig:precond-vs-cg} ist zu sehen, dass aufgrund der kleineren Konditionszahl wesentlich weniger Iterationsschritte benötigt werden, bzw. das vorkonditionierte CG-Verfahren, mit $P = diag(A_{11}, \ldots, A_{nn})$ schneller konvergiert. 
 		
+	
 	\begin{figure}[H]
-		\begin{center}
-			\includegraphics[width=0.8\textwidth]{../plots/precond-vs-cg.png}
-		\end{center}
-		\caption{Residuum nach Iterationsschritt $t$ f\"ur vorkonditioniertes CG- und CG-Verfahren }
+	\begin{subfigure}[t]{0.5\textwidth}
+			\includegraphics[width=\linewidth]{../plots/precond-vs-cg.png}
+		\subcaption{strikt diagonaldominante Koeffizientenmatrix der Form $A = B+B^T+c\cdot diag(b)$}
 		\label{fig:precond-vs-cg}	
+	\end{subfigure}
+		\begin{subfigure}[t]{0.5\textwidth}
+				\includegraphics[width=\linewidth]{../plots/precond-vs-cg-ndiag.png}
+			\subcaption{nicht diagonaldominante Koeffizientenmatrix der Form $A = B+B^T+c\cdot I$}
+			\label{fig:precond-vs-cg-ndiag}	
+		\end{subfigure}
+	
+	\caption{Residuum nach Iterationsschritt $t$ f\"ur vorkonditioniertes CG- und CG-Verfahren}
 	\end{figure}
+	
+	
 	
 	\newpage
 	\appendix

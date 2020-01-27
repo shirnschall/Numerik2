@@ -5,7 +5,7 @@ require(dplyr)
 library(latex2exp)
 
 
-data=read.csv("/Users/shirnschall/Desktop/Numerik2/plots/precond-vs-cg",header = TRUE ,sep = "\t")
+data=read.csv("/Users/shirnschall/Desktop/Numerik2/plots/precond-vs-cg-ndiag",header = TRUE ,sep = "\t")
 #data=read.csv("C:\\Users\\shirnschall\\Documents\\GitHub\\Numerik2\\plots\\cg-kond-res",header = TRUE ,sep = "\t")
 
 #data=data[!(data$density==7),]
@@ -68,14 +68,14 @@ p <- ggplot(data[!(data$r==0),],aes(x=t,y=r))+
                 labels = trans_format("log10", math_format(10^.x)))+
   #scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
   #              labels = trans_format("log10", math_format(10^.x)))
-  ylab(TeX("Residuum ($||r_t||)$)")) +
+  ylab(TeX("Residuum $||r_t||$")) +
   xlab(TeX("Iterationsschritt ($t$)"))+
   scale_color_discrete(labels = c("CG", "CG mit Vorkonditionierung"))+
   scale_shape_discrete(labels = c("CG", "CG mit Vorkonditionierung"))
   #scale_shape_manual(values = c('1'=16,'3'=17,'9'=15,'n'=3))+
   #vergleichsfunktionen
   #geom_line(data = d, aes(x=n, y=t,linetype=type))
-  #scale_linetype_discrete(labels = c("\u039f(n)","\u039f(n\u00b2)"))
+#scale_linetype_discrete(labels = c("\u039f(n)","\u039f(n\u00b2)"))
 
 
 
@@ -84,4 +84,4 @@ p <- ggplot(data[!(data$r==0),],aes(x=t,y=r))+
 p
 
 
-#ggsave("precond-vs-cg.png", units="in", width=7, height=5, dpi=500)
+ggsave("precond-vs-cg-ndiag.png", units="in", width=7, height=5, dpi=500)
