@@ -1,26 +1,18 @@
 \defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {1}Erstellen einer symmertrisch postiv definiten Zufallsmatrix mit einer fixen Anzahl an Einträgen ungleich $0$ pro Zeile in C++}{4}%
+\contentsline {lstlisting}{\numberline {1}Erstellen einer symmertrisch postiv definiten Zufallsmatrix mit einer fixen Anzahl an Eintr\IeC {\"a}gen ungleich $0$ pro Zeile in C++}{4}
 \defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {2}Implementierung des CG-Verfahrens in C++}{6}%
+\contentsline {lstlisting}{\numberline {2}Implementierung des CG-Verfahrens in C++}{8}
 \defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {3}Speicherung einer Matrix im compressed spare row Format}{9}%
+\contentsline {lstlisting}{\numberline {3}Speicherung einer Matrix im compressed spare row Format}{9}
 \defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {4}compressed spare row Format zu densematrix}{9}%
+\contentsline {lstlisting}{\numberline {4}compressed spare row Format zu densematrix}{10}
 \defcounter {refsection}{0}\relax 
-<<<<<<< HEAD
-\contentsline {lstlisting}{\numberline {5}size.h}{13}
+\contentsline {lstlisting}{\numberline {5}\"Uberladung der Matrix-Vektor Multiplikation f\"ur d\"unnbesetzte Matrizen}{10}
 \defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {6}vector.h}{13}
+\contentsline {lstlisting}{\numberline {6}size.h}{15}
 \defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {7}densematrix.h}{20}
+\contentsline {lstlisting}{\numberline {7}vector.h}{15}
 \defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {8}sparsematrix.h}{34}
-=======
-\contentsline {lstlisting}{\numberline {5}size.h}{14}%
+\contentsline {lstlisting}{\numberline {8}densematrix.h}{22}
 \defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {6}vector.h}{14}%
-\defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {7}densematrix.h}{21}%
-\defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {8}sparsematrix.h}{35}%
->>>>>>> ebc9624ba857b7d1d79efec36c10e39ae065fec9
+\contentsline {lstlisting}{\numberline {9}sparsematrix.h}{36}
