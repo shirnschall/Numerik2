@@ -3,7 +3,11 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {lstlisting}{\numberline {2}Implementierung des CG-Verfahrens in C++}{8}
 \defcounter {refsection}{0}\relax 
+<<<<<<< HEAD
 \contentsline {lstlisting}{\numberline {3}Speicherung einer Matrix im compressed spare row Format}{9}
+=======
+\contentsline {lstlisting}{\numberline {3}Speicherung einer Matrix im compressed spare row Format}{8}%
+>>>>>>> d5ebfee98c2117f593c96b56cd8add2ea3ccc733
 \defcounter {refsection}{0}\relax 
 \contentsline {lstlisting}{\numberline {4}compressed spare row Format zu densematrix}{10}
 \defcounter {refsection}{0}\relax 
