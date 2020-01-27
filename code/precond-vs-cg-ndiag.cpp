@@ -10,28 +10,24 @@ int main() {
 
     srand(5);
 
-
-    std::cout << "i\tn\ttype" << std::endl;
-    for (int i = 10; i < 1000; i+=10) {
-    linag::DenseMatrix<double> test(i,i);
-    linag::DenseMatrix<double> pinv(test.dim());
-    linag::DenseMatrix<double> id(test.dim());
-    id.id();
-    linag::Vector<double> b(test.dim().rows);
+    linag::DenseMatrix<double> test(201,201);
+    linag::DenseMatrix<double> pinv(201,201);
+    linag::Vector<double> b(201);
     b.rand();
 
     int notZeroPerLine = 9;
 
     //create matrix
-    test.zeros();
     test.randLT();
-    test=test+id;
+    double c = 5;
+    linag::DenseMatrix<double> diagM(test.dim());
+    diagM.id();
 
     //test = test + test.transpose() + c * diagM;
     test = test * test.transpose();
-    test.randSPD(9);
 
-    //std::cout << test.toEigen().eigenvalues() << std::endl;
+
+
 
     pinv.diag(test);
     pinv = pinv.inverse();
@@ -47,15 +43,21 @@ int main() {
 
     //std::cout << test.cond() << std::endl;
 
-    res = test.conjugateGradientSolver(b,10e-16);
+    std::cout << "r\tt\ttype" << std::endl;
+
+
     res = testS.conjugateGradientSolver(b,10e-16, &count, &xs,&rs);
-    std::cout << count << '\t' << i << "\tcg" << std::endl;
+    for (int i = 0; i < rs.length(); ++i) {
+        if(rs.at(i))
+            std::cout << rs.at(i) << '\t' << i << "\tcg" << std::endl;
+    }
 
     res = testS.preCondConjugateGradientSolver(pinvS, b,10e-16, &count, &xs,&rs);
-            std::cout << count<< '\t' << i << "\tprecg" << std::endl;
-
-
+    for (int i = 0; i < rs.length(); ++i) {
+        if(rs.at(i))
+            std::cout << rs.at(i)<< '\t' << i << "\tprecg" << std::endl;
     }
+
 
     return 0;
 }

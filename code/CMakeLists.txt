@@ -6,6 +6,6 @@ set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 
-add_executable(code main.cpp Linag/vector.h Linag/densematrix.h Linag/sparsematrix.h "eigen.cpp")
+add_executable(code main.cpp Linag/vector.h Linag/densematrix.h Linag/sparsematrix.h)
 
 target_link_libraries(code Threads::Threads)

@@ -136,7 +136,7 @@ std::ostream& operator<<(std::ostream& output,const DenseMatrix<T>& x);
         assert(isSymmetric() && notZeroPerLine <= dim().cols && notZeroPerLine%2);
 
         randLT();
-        double c = 500;
+        double c = 50;
         linag::DenseMatrix<double> diagM(dim());
         diagM.randDiag();
 
