@@ -52,7 +52,7 @@ scientific <- function(x){
 p <- ggplot(data,aes(x=n,y=i))+
   geom_point(aes(shape = factor(type),color = factor(type))) + 
   #geom_path(aes(group = factor(type),color = factor(type)))+
-  geom_smooth(aes(color=factor(type)),size=0.5,method="lm", se=TRUE, formula = y~poly(x,1,raw=TRUE))+ # argument se=F schaltet konvidenzintervall aus
+  geom_smooth(aes(color=factor(type)),size=0.5,method="lm", se=FALSE, formula = y~poly(x,1,raw=TRUE))+ # argument se=F schaltet konvidenzintervall aus
   
   theme_bw() +
   #umlaut a = \u00e4

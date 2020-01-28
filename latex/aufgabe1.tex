@@ -516,24 +516,24 @@ date=short                % Datumsformat
 	In \cref{fig:vcg-vergleich} ist zu sehen, dass das Vorkonditionieren des Problems je nach Problem unterschiedlich gut funktioniert.
 	F\"ur strikt diagonaldominante Koeffizientenmatrizen wie in \cref{fig:precond-vs-cg} sind mit $P = diag(A_{11}, \ldots, A_{nn})$ aufgrund der kleineren Konditionszahl wesentlich weniger Iterationsschritte n\"otig, bzw. das vorkonditionierte CG-Verfahren konvergiert schneller. Dies funktioniert wie in \cref{fig:precond-vs-cg-ndiag} nicht f\"ur alle Koeffizientenmatrizen.
 		
-	
+	\newpage
+	\footnotetext[1]{$A,B\in \mathbb{R}^{n\times n},b\in \mathbb{R}^n,c\in \mathbb{R},n\in\mathbb{N}$}
 	\begin{figure}[H]
 	\begin{subfigure}[t]{0.5\textwidth}
 			\includegraphics[width=\linewidth]{../plots/precond-vs-cg.png}
-		\subcaption{strikt diagonaldominante Koeffizientenmatrix der Form $A = B+B^T+c\cdot diag(b)$}
+		\subcaption{Koeffizientenmatrix der Form $A = B+B^T+c\cdot diag(b)$\footnotemark}
 		\label{fig:precond-vs-cg}	
 	\end{subfigure}
 		\begin{subfigure}[t]{0.5\textwidth}
 				\includegraphics[width=\linewidth]{../plots/precond-vs-cg-ndiag.png}
-			\subcaption{Koeffizientenmatrix der Form $A = B+B^T+c\cdot I$}
+			\subcaption{Koeffizientenmatrix der Form $A = B+B^T+c\cdot I_n$}
 			\label{fig:precond-vs-cg-ndiag}	
 		\end{subfigure}
 	
 	\caption{Residuum nach Iterationsschritt $t$ f\"ur vorkonditioniertes CG- und CG-Verfahren}\label{fig:vcg-vergleich}
 	\end{figure}
 
-
-	F\"ur Matrizen bei denen das Vorkonditionieren gut funktioniert, bleibt die Iterationszahl f\"ur verschieden gro\ss e Probleme nahezu konstant und die Streuung wird geringer, wie an den Trendlinien und den Konfidenzintervallen in \cref{fig:precond-vs-cg-it} zu sehen ist.
+	F\"ur Matrizen bei denen das Vorkonditionieren gut funktioniert, steigt die Iterationszahl f\"ur gr\"o\ss er werdende Matrizen mit Vorkonditionierung wesentlich langsamer und die Streuung ist geringer als ohne, wie an den Trendlinien in \cref{fig:precond-vs-cg-it} zu sehen ist. 
 	
 	\begin{figure}[H]
 		\begin{center}
