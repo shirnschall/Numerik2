@@ -64,7 +64,7 @@ p <- ggplot(data,aes(x=n,y=t))+
   scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
                 labels = trans_format("log10", math_format(10^.x)))+
   ylab("Zeit [\u03bcs]") +
-  xlab(TeX("Matrix ($n\\times n$)"))+
+  xlab("Matrixgr\u00f6\u00dfe (n)")+
   scale_color_discrete(labels = c("Cholesky - LLT-Zerlegung"))+
   scale_shape_manual(values = c("llt"=16),labels = c("Cholesky - LLT-Zerlegung"))+
   #vergleichsfunktionen

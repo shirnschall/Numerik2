@@ -52,7 +52,7 @@ scientific <- function(x){
 p <- ggplot(data,aes(x=n,y=i))+
   geom_point(aes(shape = factor(type),color = factor(type))) + 
   #geom_path(aes(group = factor(type),color = factor(type)))+
-  geom_smooth(aes(color=factor(type)),size=0.5,method="lm", se=FALSE, formula = y~poly(x,1,raw=TRUE))+ # argument se=F schaltet konvidenzintervall aus
+  geom_smooth(aes(color=factor(type)),size=0.5,method="lm", se=TRUE, formula = y~poly(x,1,raw=TRUE))+ # argument se=F schaltet konvidenzintervall aus
   
   theme_bw() +
   #umlaut a = \u00e4
@@ -68,8 +68,8 @@ p <- ggplot(data,aes(x=n,y=i))+
   #              labels = trans_format("log10", math_format(10^.x)))+
   #scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
   #              labels = trans_format("log10", math_format(10^.x)))+
-  ylab(TeX("Residuum $||r_t||$")) +
-  xlab(TeX("Iterationsschritt ($t$)"))+
+  ylab(TeX("Iterationszahl")) +
+  xlab("Matrixgr\u00f6\u00dfe (n)")+
   scale_color_discrete(labels = c("CG", "CG mit Vorkonditionierung"))+
   scale_shape_discrete(labels = c("CG", "CG mit Vorkonditionierung"))
 #scale_shape_manual(values = c('1'=16,'3'=17,'9'=15,'n'=3))+
@@ -84,4 +84,4 @@ p <- ggplot(data,aes(x=n,y=i))+
 p
 
 
-#ggsave("precond-vs-cg-ndiag.png", units="in", width=7, height=5, dpi=500)
+ggsave("precond-vs-cg-it.png", units="in", width=7, height=5, dpi=500)

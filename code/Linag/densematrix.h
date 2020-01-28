@@ -151,7 +151,6 @@ std::ostream& operator<<(std::ostream& output,const DenseMatrix<T>& x);
             }
         }
     }
-
 }
 
 
@@ -516,8 +515,6 @@ linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T>
     unsigned long t = 0;
     r1 = b - (*this)*x;
     d = r1;
-    if(count)
-        *count = 0;
     if(xs) {
         for (int i = 1; i < xs->length(); ++i) {
             xs->at(i) = nullptr;
@@ -539,15 +536,14 @@ linag::Vector<T> linag::DenseMatrix<T>::conjugateGradientSolver(linag::Vector<T>
         d = r2 + betta*d;
 
         r1=r2;
-        if(count)
-            ++*count;
         if(xs && t < xs->length())
             xs->at(t) = new linag::Vector<double>(x);
         if(rs && t < rs->length())
             rs->at(t) = r2.l2norm();
         ++t;
     }while (r2.l2norm()>tau);
-
+    if(count)
+        *count = t;
     return x;
 }
 

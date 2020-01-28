@@ -52,6 +52,9 @@ date=short                % Datumsformat
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 
+\usepackage{inconsolata}
+
+
 \makeatletter
 \def\BState{\State\hskip-\ALG@thistlm}
 \makeatother
@@ -97,6 +100,8 @@ date=short                % Datumsformat
 	\rfoot{\thepage}
 }
 
+\definecolor{babyblue}{rgb}{0.54, 0.81, 0.94}
+\definecolor{ballblue}{rgb}{0.13, 0.67, 0.8}
 
 %listings settings
 \definecolor{mygreen}{rgb}{0,0.6,0}
@@ -106,7 +111,7 @@ date=short                % Datumsformat
 
 \lstset{ %
 	backgroundcolor=\color{BackgroundGray},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
-	basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+	basicstyle=\footnotesize\ttfamily,        % the size of the fonts that are used for the code
 	breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
 	breaklines=true,                 % sets automatic line breaking
 	captionpos=b,                    % sets the caption-position to bottom
@@ -117,8 +122,8 @@ date=short                % Datumsformat
 	frame=single,	                   % adds a frame around the code
 	keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
 	keywordstyle=\color{blue},       % keyword style
-	language=C,                 	   % the language of the code
-	otherkeywords={*,...},           % if you want to add more keywords to the set
+	language=C++,                 	   % the language of the code
+	otherkeywords={int,unsigned,long,char,template,typename,operator,nullptr,new,this,*,...},           % if you want to add more keywords to the set
 	numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
 	numbersep=5pt,                   % how far the line-numbers are from the code
 	numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
@@ -130,8 +135,8 @@ date=short                % Datumsformat
 	stringstyle=\color{mymauve},     % string literal style
 	tabsize=2,	                   % sets default tabsize to 2 spaces
 	title=\lstname,                   % show the filename of files included with \lstinputlisting; also try caption instead of title
-	emph={int,unsigned,long,vector,char,string},
-	emphstyle={\color{ForestGreen}}
+	emph={vector,string,linag,Vector,DenseMatrix,SparseMatrix,std,Eigen},
+	emphstyle={\color{ballblue}}
 }
 
 \Crefname{lstlisting}{Listing}{Listing}
@@ -334,7 +339,7 @@ date=short                % Datumsformat
 	Zum Testen kann $A$ folgendermaßen generiert werden. 
 	
 	
-	\lstinputlisting[language=C++, firstline = 486, lastline= 509, caption = Erstellen einer symmertrisch postiv definiten Zufallsmatrix mit einer fixen Anzahl an Einträgen ungleich $0$ pro Zeile in C++]{../code/Linag/densematrix.h} 
+	\lstinputlisting[language=C++, firstline = 134, lastline= 153, caption = Erstellen einer symmertrisch postiv definiten Zufallsmatrix mit einer fixen Anzahl an Einträgen ungleich $0$ pro Zeile in C++]{../code/Linag/densematrix.h} 
 	
 	\begin{bemerkung}
 		Die Implementierung aller Klassen und Funktionen im $linag$-namespace sind im Anhang zu finden. Zum Vergleich wurde die Eigen-Bibliothek verwendet. (\textit{http://eigen.tuxfamily.org}) 
@@ -425,7 +430,7 @@ date=short                % Datumsformat
 	\end{align*}
 	
 	mit der spektralen Konditionszahl der Matrix $\kappa(A) := \left|\frac{\lambda_{max}(A)}{\lambda_{min}(A)}\right|$ und der Energienorm $\norm{x}_A := \sqrt{(x,x)_A}$. Das Verfahren konvergiert für $\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1} < 1$, was offensichtlich gegeben ist, da $\kappa \geq 1$. Die Konvergenzgeschwindigkeit ist größer, wenn der Bruch minimal ist, also genau dann wenn die Eigenwerte der Matrix eng zusammenliegen. Wenn alle Eigenwerte gleich sind, dann gilt $\kappa = 1$ also $\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1} = 0$. 
-	\lstinputlisting[language=C++, firstline = 411, lastline= 439, caption = Implementierung des CG-Verfahrens in C++]{../code/Linag/densematrix.h} \label{lst:cg}
+	\lstinputlisting[language=C++, firstline = 499, lastline= 548, caption = Implementierung des CG-Verfahrens in C++]{../code/Linag/densematrix.h} \label{lst:cg}
 	
 	
 	\subsection{Dünn besetzte Matrizen}
@@ -444,13 +449,13 @@ date=short                % Datumsformat
 	
 	Eine Möglichkeit das Format zu implementieren ist wie folgt:
 	
-	\lstinputlisting[language=C++, firstline = 170, lastline= 204, caption = Speicherung einer Matrix im compressed spare row Format]{../code/Linag/sparsematrix.h} 
+	\lstinputlisting[language=C++, firstline = 254, lastline= 288, caption = Speicherung einer Matrix im compressed spare row Format]{../code/Linag/sparsematrix.h} 
 	
-	\lstinputlisting[language=C++, firstline = 536, lastline= 552, caption = compressed spare row Format zu densematrix]{../code/Linag/densematrix.h} 
+	\lstinputlisting[language=C++, firstline = 576, lastline= 592, caption = compressed spare row Format zu vollbesetzter Matrix]{../code/Linag/densematrix.h} 
 	
 	
 	Die Implementierung des CG-Verfahrens unterscheidet sich dabei nicht von \cref{lst:cg}. Die Matrix-Vektor Multiplikation kann f\"ur d\"unnbesetzte Matrizen jedoch effizienter implementiert werden.  (\cref{lst:sparse-vektor-mult})
-	\lstinputlisting[language=C++, firstline = 84, lastline= 94, caption = \"Uberladung der Matrix-Vektor Multiplikation f\"ur d\"unnbesetzte Matrizen]{../code/Linag/sparsematrix.h} \label{lst:sparse-vektor-mult}
+	\lstinputlisting[language=C++, firstline = 84, lastline= 95, caption = \"Uberladen der Matrix-Vektor Multiplikation f\"ur d\"unnbesetzte Matrizen]{../code/Linag/sparsematrix.h} \label{lst:sparse-vektor-mult}
 	
 	
 
@@ -502,7 +507,7 @@ date=short                % Datumsformat
 	
 	\begin{figure}[H]
 		\begin{center}
-			\includegraphics[width=0.8\textwidth]{../plots/precond-vs-cg-complexity.png}
+			\includegraphics[width=0.7\textwidth]{../plots/precond-vs-cg-complexity.png}
 		\end{center}
 		\caption{Residuum nach Iterationsschritt $t$ f\"ur vorkonditioniertes CG- und CG-Verfahren }
 		\label{fig:precond-vs-cg-complexity}	
@@ -525,6 +530,17 @@ date=short                % Datumsformat
 		\end{subfigure}
 	
 	\caption{Residuum nach Iterationsschritt $t$ f\"ur vorkonditioniertes CG- und CG-Verfahren}\label{fig:vcg-vergleich}
+	\end{figure}
+
+
+	F\"ur Matrizen bei denen das Vorkonditionieren gut funktioniert, bleibt die Iterationszahl f\"ur verschieden gro\ss e Probleme nahezu konstant und die Streuung wird geringer, wie an den Trendlinien und den Konfidenzintervallen in \cref{fig:precond-vs-cg-it} zu sehen ist.
+	
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{../plots/precond-vs-cg-it.png}
+		\end{center}
+		\caption{Iterationszahlen f\"ur verschieden gro\ss e Koeffizientenmatrizen der Form $A = B+B^T+c\cdot diag(b)$}
+		\label{fig:precond-vs-cg-it}	
 	\end{figure}
 	
 	
