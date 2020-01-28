@@ -139,7 +139,7 @@ date=short                % Datumsformat
 	emphstyle={\color{ballblue}}
 }
 
-\Crefname{lstlisting}{Listing}{Listing}
+\crefname{lstlisting}{Listing}{Listing}
 
 
 %italic quotes
@@ -430,7 +430,7 @@ date=short                % Datumsformat
 	\end{align*}
 	
 	mit der spektralen Konditionszahl der Matrix $\kappa(A) := \left|\frac{\lambda_{max}(A)}{\lambda_{min}(A)}\right|$ und der Energienorm $\norm{x}_A := \sqrt{(x,x)_A}$. Das Verfahren konvergiert für $\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1} < 1$, was offensichtlich gegeben ist, da $\kappa \geq 1$. Die Konvergenzgeschwindigkeit ist größer, wenn der Bruch minimal ist, also genau dann wenn die Eigenwerte der Matrix eng zusammenliegen. Wenn alle Eigenwerte gleich sind, dann gilt $\kappa = 1$ also $\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1} = 0$. 
-	\lstinputlisting[language=C++, firstline = 499, lastline= 548, caption = Implementierung des CG-Verfahrens in C++]{../code/Linag/densematrix.h} \label{lst:cg}
+	\lstinputlisting[label={lst:cg},language=C++, firstline = 499, lastline= 548, caption = Implementierung des CG-Verfahrens in C++]{../code/Linag/densematrix.h}
 	
 	
 	\subsection{Dünn besetzte Matrizen}
@@ -455,7 +455,7 @@ date=short                % Datumsformat
 	
 	
 	Die Implementierung des CG-Verfahrens unterscheidet sich dabei nicht von \cref{lst:cg}. Die Matrix-Vektor Multiplikation kann f\"ur d\"unnbesetzte Matrizen jedoch effizienter implementiert werden.  (\cref{lst:sparse-vektor-mult})
-	\lstinputlisting[language=C++, firstline = 84, lastline= 95, caption = \"Uberladen der Matrix-Vektor Multiplikation f\"ur d\"unnbesetzte Matrizen]{../code/Linag/sparsematrix.h} \label{lst:sparse-vektor-mult}
+	\lstinputlisting[label={lst:sparse-vektor-mult},language=C++, firstline = 84, lastline= 95, caption = \"Uberladen der Matrix-Vektor Multiplikation f\"ur d\"unnbesetzte Matrizen]{../code/Linag/sparsematrix.h}
 	
 	
 
